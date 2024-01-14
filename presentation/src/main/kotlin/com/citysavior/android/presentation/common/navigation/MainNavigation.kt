@@ -17,7 +17,7 @@ fun NavGraphBuilder.mainGraph(
         startDestination = MAIN_ROUTE,
     ) {
         composable(route = MAIN_ROUTE) {
-            MainRootTab(navController)
+            MainRootTab()
         }
 
     }
