@@ -1,6 +1,7 @@
 package com.citysavior.android.domain.repository.report
 
 import com.citysavior.android.domain.model.common.Async
+import com.citysavior.android.domain.model.report.Category
 import com.citysavior.android.domain.model.report.ReportPoint
 import com.citysavior.android.domain.model.report.ReportPointDetail
 import java.io.File
@@ -22,4 +23,5 @@ interface ReportRepository {
     ): Async<Long>
     suspend fun createReportComment(reportPointId : Long, content : String) : Async<Long>
 
+    suspend fun getCategoryList() : Async<List<Category>>
 }
