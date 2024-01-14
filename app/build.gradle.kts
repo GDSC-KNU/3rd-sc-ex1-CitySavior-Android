@@ -69,12 +69,20 @@ dependencies {
     implementation(platform(libs.okthhp.bom))
 
     implementation(libs.splashscreen)
+
+    //datastore
+    implementation(libs.datastore.preferences)
     //firebase
     implementation(platform("com.google.firebase:firebase-bom:32.7.0"))
     implementation("com.google.firebase:firebase-analytics")
 
     //oss-licenses
     implementation ("com.google.android.gms:play-services-oss-licenses:17.0.0")
+
+    //room
+    implementation(libs.room.runtime)
+    implementation(libs.room.ktx)
+    annotationProcessor(libs.room.compiler)
 
     implementation(project(":presentation"))
     implementation(project(":domain"))

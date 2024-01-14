@@ -2,6 +2,7 @@
 plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.android)
+    alias(libs.plugins.kotlin.kapt)
 }
 
 android {
@@ -38,4 +39,14 @@ dependencies {
 
     implementation(libs.logging.interceptor)
     implementation(libs.converter.gson)
+    implementation(libs.datastore.preferences)
+
+    //room
+    implementation(libs.room.runtime)
+    implementation(libs.room.ktx)
+    annotationProcessor(libs.room.compiler)
+}
+
+kapt {
+    correctErrorTypes = true
 }
