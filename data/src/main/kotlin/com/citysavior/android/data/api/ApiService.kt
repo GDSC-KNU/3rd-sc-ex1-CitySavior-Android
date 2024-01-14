@@ -5,11 +5,12 @@ import com.citysavior.android.data.dto.auth.request.LoginRequestV1
 import com.citysavior.android.data.dto.auth.request.SignupRequestV1
 import com.citysavior.android.data.dto.auth.response.TokenResponse
 import com.citysavior.android.data.dto.report.request.CreateReportCommentRequest
+import com.citysavior.android.data.dto.report.response.CategoryInfoResponse
+import com.citysavior.android.data.dto.report.response.ReportDetailResponse
 import com.citysavior.android.data.dto.report.response.ReportsByMapResponse
 import com.citysavior.android.data.dto.report.response.StatisticsByMapResponse
 import com.citysavior.android.data.dto.user.response.UserInfoResponse
 import okhttp3.MultipartBody
-import okhttp3.RequestBody
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.GET
@@ -29,7 +30,7 @@ interface ApiService {
 
     @POST("/auth/signup/v1")
     @Headers("Auth: false")
-    suspend fun loginSocial(@Body request: SignupRequestV1): Response<TokenResponse>
+    suspend fun signup(@Body request: SignupRequestV1): Response<TokenResponse>
 
 
     //--------------------- User ---------------------//
@@ -61,13 +62,13 @@ interface ApiService {
         @Part imageFiles : MultipartBody.Part,
         @Part("latitude") latitude : Double,
         @Part("longitude") longitude : Double,
-        @Part("detail") detail : Int,
+        @Part("detail") detail : String,
         @Part("categoryId") categoryId : Long,
         @Part("damageRatio") damageRatio : Int,
     ) : Response<Long>
 
     @GET("/reports/{reportId}")
-    suspend fun getReportDetail(@Path("reportId") reportId : Long) : Response<ReportsByMapResponse>
+    suspend fun getReportDetail(@Path("reportId") reportId : Long) : Response<ReportDetailResponse>
 
     @POST("/reports/{reportId}/comment")
     suspend fun createComment(
@@ -77,6 +78,9 @@ interface ApiService {
 
     @PATCH("/reports/{reportId}/end")
     suspend fun endReport(@Path("reportId") reportId : Long) : Response<Unit>
+
+    @GET("/reports/categories")
+    suspend fun getCategoryList() : Response<CategoryInfoResponse>
 }
 object ApiConstants {
     const val BASE_URL = "http://10.0.2.2:8080"
