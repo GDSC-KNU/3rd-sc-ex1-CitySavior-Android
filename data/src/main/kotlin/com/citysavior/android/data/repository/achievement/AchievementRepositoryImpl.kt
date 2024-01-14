@@ -19,7 +19,7 @@ class AchievementRepositoryImpl @Inject constructor(
         return invokeApiAndConvertAsync(
             api = { apiService.getAchievementInfo() },
             convert = {
-                this.achievements.map { achievementDto ->
+                it.achievements.map { achievementDto ->
                     achievementDto.toDomain(
                        db.categoryDao().getCategoryById(achievementDto.categoryId)
                     )

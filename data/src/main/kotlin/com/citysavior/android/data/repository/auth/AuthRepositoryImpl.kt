@@ -27,7 +27,7 @@ class AuthRepositoryImpl @Inject constructor(
         val request = LoginRequestV1(uuid = uuid)
         return invokeApiAndConvertAsync(
             api = { apiService.login(request) },
-            convert = { this.toDomain() }
+            convert = { it.toDomain() }
         )
     }
 
@@ -36,7 +36,7 @@ class AuthRepositoryImpl @Inject constructor(
         val request = SignupRequestV1(uuid = uuid)
         return invokeApiAndConvertAsync(
             api = { apiService.signup(request) },
-            convert = { this.toDomain() }
+            convert = { it.toDomain() }
         )
     }
 

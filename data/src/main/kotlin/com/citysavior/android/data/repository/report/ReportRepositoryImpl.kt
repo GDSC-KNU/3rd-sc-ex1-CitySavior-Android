@@ -29,7 +29,7 @@ class ReportRepositoryImpl @Inject constructor(
         return invokeApiAndConvertAsync(
             api = { apiService.getReportInfo(latitude, longitude) },
             convert = {
-                this.points.map { reportPointDto ->
+                it.points.map { reportPointDto ->
                     reportPointDto.toDomain(
                         db.categoryDao().getCategoryById(reportPointDto.categoryId)
                     )
@@ -41,7 +41,7 @@ class ReportRepositoryImpl @Inject constructor(
     override suspend fun getReportDetail(reportPoint: ReportPoint): Async<ReportPointDetail> {
         return invokeApiAndConvertAsync(
             api = { apiService.getReportDetail(reportPoint.id) },
-            convert = { this.toDomain(reportPoint) }
+            convert = { it.toDomain(reportPoint) }
         )
     }
 
@@ -57,7 +57,7 @@ class ReportRepositoryImpl @Inject constructor(
         val formFile = MultipartBody.Part.createFormData("file", fileName, file.asRequestBody())
         return invokeApiAndConvertAsync(
             api = { apiService.createReport(formFile, latitude, longitude, detail, categoryId, damageRatio) },
-            convert = { this }
+            convert = { it }
         )
     }
 
@@ -65,7 +65,7 @@ class ReportRepositoryImpl @Inject constructor(
         val request = CreateReportCommentRequest(content)
         return invokeApiAndConvertAsync(
             api = { apiService.createComment(reportPointId, request) },
-            convert = { this }
+            convert = { it }
         )
     }
 

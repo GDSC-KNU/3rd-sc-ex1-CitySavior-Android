@@ -20,11 +20,11 @@ class UserRepositoryImpl @Inject constructor(
             api = { apiService.getUserInfo() },
             convert = {
                 UserInfo(
-                    totalReportCount = this.totalReportCount,
-                    totalRepairedCount = this.totalRepairedCount,
-                    achieveCollectCount = this.achieveCollectCount,
-                    achieveProgressingList = this.achieveProgressing.map {
-                        it.toDomain(db.categoryDao().getCategoryById(it.categoryId))
+                    totalReportCount = it.totalReportCount,
+                    totalRepairedCount = it.totalRepairedCount,
+                    achieveCollectCount = it.achieveCollectCount,
+                    achieveProgressingList = it.achieveProgressing.map {dto ->
+                        dto.toDomain(db.categoryDao().getCategoryById(dto.categoryId))
                     },
                 )
             }

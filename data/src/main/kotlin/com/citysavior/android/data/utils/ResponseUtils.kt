@@ -17,13 +17,13 @@ import retrofit2.Response
  */
 suspend fun <Data, Domain> invokeApiAndConvertAsync(
     api: suspend () -> Response<Data>,
-    convert: suspend Data.() -> Domain
+    convert: suspend (Data) -> Domain
 ): Async<Domain> {
     return try {
         val response = api.invoke()
         val body = response.body()
         if (response.isSuccessful && body != null) {
-            Async.Success((body as Data?)!!.convert())
+            Async.Success(convert((body as Data?)!!))
         } else {
             Async.Error(Throwable(response.message()))
         }
