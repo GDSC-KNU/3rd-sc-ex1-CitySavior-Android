@@ -79,6 +79,11 @@ dependencies {
     //oss-licenses
     implementation ("com.google.android.gms:play-services-oss-licenses:17.0.0")
 
+    //room
+    implementation(libs.room.runtime)
+    implementation(libs.room.ktx)
+    annotationProcessor(libs.room.compiler)
+
     implementation(project(":presentation"))
     implementation(project(":domain"))
     implementation(project(":data"))

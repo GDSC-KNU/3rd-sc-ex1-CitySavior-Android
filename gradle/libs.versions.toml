@@ -12,6 +12,7 @@ espresso-core = "3.5.1"
 lifecycle-runtime-ktx = "2.6.2"
 core-splashscreen = "1.0.0-alpha01"
 datastore-preferences = "1.0.0"
+room = "2.4.2"
 # -------- compose -------- #
 activity-compose = "1.8.2"
 compose-bom = "2023.03.00"
@@ -89,7 +90,12 @@ dagger-hilt-compiler = { group = "com.google.dagger", name = "hilt-android-compi
 appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
 material = { group = "com.google.android.material", name = "material", version.ref = "material" }
 splashscreen = { group = "androidx.core", name = "core-splashscreen", version.ref = "core-splashscreen" }
+
+## local db
 datastore-preferences = { group = "androidx.datastore", name = "datastore-preferences", version.ref = "datastore-preferences" }
+room-runtime = { group = "androidx.room", name = "room-runtime", version.ref = "room" }
+room-ktx = { group = "androidx.room", name = "room-ktx", version.ref = "room" }
+room-compiler = { group = "androidx.room", name = "room-compiler", version.ref = "room" }
 
 ## -------- kakao -------- ##
 kakao-login = { group = "com.kakao.sdk", name = "v2-user", version = "kakao-login" }
