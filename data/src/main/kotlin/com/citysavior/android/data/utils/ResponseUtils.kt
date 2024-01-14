@@ -17,7 +17,7 @@ import retrofit2.Response
  */
 suspend fun <Data, Domain> invokeApiAndConvertAsync(
     api: suspend () -> Response<Data>,
-    convert: Data.() -> Domain
+    convert: suspend Data.() -> Domain
 ): Async<Domain> {
     return try {
         val response = api.invoke()
