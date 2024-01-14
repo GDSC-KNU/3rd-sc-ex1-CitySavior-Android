@@ -4,10 +4,12 @@ import com.citysavior.android.data.dto.achievement.response.AchievementInfoRespo
 import com.citysavior.android.data.dto.auth.request.LoginRequestV1
 import com.citysavior.android.data.dto.auth.request.SignupRequestV1
 import com.citysavior.android.data.dto.auth.response.TokenResponse
+import com.citysavior.android.data.dto.report.request.CreateReportCommentRequest
 import com.citysavior.android.data.dto.report.response.ReportsByMapResponse
 import com.citysavior.android.data.dto.report.response.StatisticsByMapResponse
 import com.citysavior.android.data.dto.user.response.UserInfoResponse
 import okhttp3.MultipartBody
+import okhttp3.RequestBody
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.GET
@@ -68,7 +70,10 @@ interface ApiService {
     suspend fun getReportDetail(@Path("reportId") reportId : Long) : Response<ReportsByMapResponse>
 
     @POST("/reports/{reportId}/comment")
-    suspend fun createComment(@Path("reportId") reportId : Long) : Response<Long>
+    suspend fun createComment(
+        @Path("reportId") reportId : Long,
+        @Body request : CreateReportCommentRequest,
+    ) : Response<Long>
 
     @PATCH("/reports/{reportId}/end")
     suspend fun endReport(@Path("reportId") reportId : Long) : Response<Unit>
