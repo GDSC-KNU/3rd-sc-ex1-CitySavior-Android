@@ -3,8 +3,6 @@ package com.citysavior.android.data.repository.report
 import com.citysavior.android.data.api.ApiService
 import com.citysavior.android.data.dto.report.request.CreateReportCommentRequest
 import com.citysavior.android.data.dto.report.response.toDomain
-import com.citysavior.android.data.dto.report.response.toEntity
-import com.citysavior.android.data.entity.category.CategoryDatabase
 import com.citysavior.android.data.utils.invokeApiAndConvertAsync
 import com.citysavior.android.domain.model.common.Async
 import com.citysavior.android.domain.model.report.Category
@@ -20,7 +18,6 @@ import javax.inject.Singleton
 @Singleton
 class ReportRepositoryImpl @Inject constructor(
     private val apiService: ApiService,
-    private val db: CategoryDatabase,
 ) : ReportRepository {
     override suspend fun getReportList(
         latitude: Double,
@@ -28,13 +25,7 @@ class ReportRepositoryImpl @Inject constructor(
     ): Async<List<ReportPoint>> {
         return invokeApiAndConvertAsync(
             api = { apiService.getReportInfo(latitude, longitude) },
-            convert = {
-                it.points.map { reportPointDto ->
-                    reportPointDto.toDomain(
-                        db.categoryDao().getCategoryById(reportPointDto.categoryId)
-                    )
-                 }
-            }
+            convert = { it.points.toDomain() }
         )
     }
 
@@ -51,12 +42,12 @@ class ReportRepositoryImpl @Inject constructor(
         latitude: Double,
         longitude: Double,
         detail: String,
-        categoryId: Long,
+        category: Category,
         damageRatio: Int
     ): Async<Long> {
         val formFile = MultipartBody.Part.createFormData("file", fileName, file.asRequestBody())
         return invokeApiAndConvertAsync(
-            api = { apiService.createReport(formFile, latitude, longitude, detail, categoryId, damageRatio) },
+            api = { apiService.createReport(formFile, latitude, longitude, detail, category, damageRatio) },
             convert = { it }
         )
     }
@@ -69,17 +60,5 @@ class ReportRepositoryImpl @Inject constructor(
         )
     }
 
-    override suspend fun getCategoryList(): Async<List<Category>> {
-        val resp = apiService.getCategoryList()
-        return try {
-            if(!resp.isSuccessful || resp.body() == null){
-                return Async.Error(Exception("getCategoryList failed"))
-            }
-            val categoryDtoList = resp.body()!!.categories
-            db.categoryDao().insertAllCategory(categoryDtoList.map { it.toEntity() })
-            Async.Success(categoryDtoList.map { it.toDomain() })
-        } catch (e: Exception) {
-            Async.Error(e)
-        }
-    }
+
 }

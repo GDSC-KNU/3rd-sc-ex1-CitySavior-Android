@@ -1,7 +1,5 @@
 package com.citysavior.android.data.dto.report.response
 
-import com.citysavior.android.data.entity.category.CategoryEntity
-import com.citysavior.android.data.entity.category.toDomain
 import com.citysavior.android.domain.model.report.Comment
 import com.citysavior.android.domain.model.report.ReportPoint
 import com.citysavior.android.domain.model.report.ReportPointDetail
