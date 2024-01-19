@@ -14,7 +14,7 @@ companion object{
             id: Long = 1L,
             latitude: Double = 37.123456,
             longitude: Double = 127.123456,
-            category: Category = Category.fixture(),
+            category: Category = Category.UNKNOWN,
             weight : Int = 1,
         ) : ReportPoint{
             return ReportPoint(
@@ -51,7 +51,7 @@ class ReportPointDetail(
             id: Long = 1L,
             latitude: Double = 35.893314,
             longitude: Double = 128.613390,
-            category: Category = Category.fixture(),
+            category: Category = Category.UNKNOWN,
             weight : Int = 1,
             description : String = "도로가 파여있어요.",
             imgUrl : String = "https://picsum.photos/200/300",

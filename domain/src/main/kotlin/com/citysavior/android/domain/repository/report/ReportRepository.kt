@@ -18,10 +18,9 @@ interface ReportRepository {
         latitude: Double,
         longitude: Double,
         detail : String,
-        categoryId : Long,
+        category : Category,
         damageRatio : Int,
     ): Async<Long>
     suspend fun createReportComment(reportPointId : Long, content : String) : Async<Long>
 
-    suspend fun getCategoryList() : Async<List<Category>>
 }

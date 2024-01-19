@@ -1,7 +1,6 @@
 package com.citysavior.android.data.dto.report.response
 
-import com.citysavior.android.data.entity.category.CategoryEntity
-import com.citysavior.android.data.entity.category.toDomain
+import com.citysavior.android.domain.model.report.Category
 import com.citysavior.android.domain.model.report.ReportPoint
 
 data class ReportsByMapResponse(
@@ -12,17 +11,15 @@ data class ReportPointDto(
     val id: Long,
     val latitude: Double,
     val longitude: Double,
-    val categoryId : Long,
+    val category : Category,
     val weight : Int,
 )
 
 
-fun ReportPointDto.toDomain(
-    categoryEntity: CategoryEntity,
-) = ReportPoint(
+fun ReportPointDto.toDomain() = ReportPoint(
     id = id,
     latitude = latitude,
     longitude = longitude,
-    category = categoryEntity.toDomain(),
+    category = category,
     weight = weight,
 )

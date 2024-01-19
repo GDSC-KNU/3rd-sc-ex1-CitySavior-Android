@@ -1,8 +1,7 @@
 package com.citysavior.android.data.dto.user.response
 
-import com.citysavior.android.data.entity.category.CategoryEntity
-import com.citysavior.android.data.entity.category.toDomain
 import com.citysavior.android.domain.model.achievement.Achievement
+import com.citysavior.android.domain.model.report.Category
 import com.citysavior.android.domain.model.user.AchieveProgress
 
 data class UserInfoResponse(
@@ -13,7 +12,7 @@ data class UserInfoResponse(
 )
 
 data class AchieveProgressDto(
-    val categoryId: Long,
+    val category: Category,
     val iconUrl : String,
     val name : String,
     val description : String,
@@ -21,11 +20,9 @@ data class AchieveProgressDto(
     val goalCount : Int,
 )
 
-fun AchieveProgressDto.toDomain(
-    categoryEntity : CategoryEntity,
-) = AchieveProgress(
+fun AchieveProgressDto.toDomain() = AchieveProgress(
     achievement = Achievement(
-        category = categoryEntity.toDomain(),
+        category = category,
         iconUrl = iconUrl,
         name = name,
         description = description,
