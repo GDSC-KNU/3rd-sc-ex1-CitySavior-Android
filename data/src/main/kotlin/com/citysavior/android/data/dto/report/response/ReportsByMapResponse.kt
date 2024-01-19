@@ -23,3 +23,5 @@ fun ReportPointDto.toDomain() = ReportPoint(
     category = category,
     weight = weight,
 )
+
+fun List<ReportPointDto>.toDomain() = map(ReportPointDto::toDomain)

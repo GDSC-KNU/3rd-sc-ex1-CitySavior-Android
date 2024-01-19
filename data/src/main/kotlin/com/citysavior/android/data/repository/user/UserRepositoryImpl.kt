@@ -16,16 +16,7 @@ class UserRepositoryImpl @Inject constructor(
     override suspend fun getUserInfo(): Async<UserInfo> {
         return invokeApiAndConvertAsync(
             api = { apiService.getUserInfo() },
-            convert = {
-                UserInfo(
-                    totalReportCount = it.totalReportCount,
-                    totalRepairedCount = it.totalRepairedCount,
-                    achieveCollectCount = it.achieveCollectCount,
-                    achieveProgressingList = it.achieveProgressing.map {dto ->
-                        dto.toDomain()
-                    },
-                )
-            }
+            convert = { it.toDomain() }
         )
     }
 }

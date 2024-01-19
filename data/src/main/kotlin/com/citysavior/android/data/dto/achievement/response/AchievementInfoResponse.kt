@@ -23,3 +23,5 @@ fun AchievementDto.toDomain() = Achievement(
     category = category,
     goalCount = goalCount,
 )
+
+fun List<AchievementDto>.toDomain() = map(AchievementDto::toDomain)

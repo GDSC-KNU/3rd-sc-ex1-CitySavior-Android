@@ -16,11 +16,7 @@ class AchievementRepositoryImpl @Inject constructor(
     override suspend fun getAchievement(): Async<List<Achievement>> {
         return invokeApiAndConvertAsync(
             api = { apiService.getAchievementInfo() },
-            convert = {
-                it.achievements.map { achievementDto ->
-                    achievementDto.toDomain()
-                }
-            }
+            convert = { it.achievements.toDomain() }
         )
     }
 }

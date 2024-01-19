@@ -25,11 +25,7 @@ class ReportRepositoryImpl @Inject constructor(
     ): Async<List<ReportPoint>> {
         return invokeApiAndConvertAsync(
             api = { apiService.getReportInfo(latitude, longitude) },
-            convert = {
-                it.points.map { reportPointDto ->
-                    reportPointDto.toDomain()
-                 }
-            }
+            convert = { it.points.toDomain() }
         )
     }
 
