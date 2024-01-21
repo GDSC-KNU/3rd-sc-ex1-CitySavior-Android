@@ -27,7 +27,7 @@ class StatisticsDetail(
 ){
     companion object{
         fun fixture(
-            category: Category = Category.UNKNOWN,
+            category: Category = Category.OTHER,
             totalReports : Int = 10,
             resolvedReports : Int = 5,
         ) : StatisticsDetail{
