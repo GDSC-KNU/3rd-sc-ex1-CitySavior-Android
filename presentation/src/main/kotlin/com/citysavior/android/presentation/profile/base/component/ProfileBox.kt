@@ -1,4 +1,4 @@
-package com.citysavior.android.presentation.profile.component
+package com.citysavior.android.presentation.profile.base.component
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box

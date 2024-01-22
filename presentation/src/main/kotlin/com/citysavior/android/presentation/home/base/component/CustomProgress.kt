@@ -1,4 +1,4 @@
-package com.citysavior.android.presentation.home.component
+package com.citysavior.android.presentation.home.base.component
 
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background

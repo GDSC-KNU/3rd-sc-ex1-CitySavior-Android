@@ -1,6 +1,5 @@
-package com.citysavior.android.presentation.profile.view
+package com.citysavior.android.presentation.profile.base
 
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -8,29 +7,18 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.grid.GridCells
-import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
-import androidx.navigation.NavController
 import com.citysavior.android.presentation.common.constant.Sizes
 import com.citysavior.android.presentation.common.constant.TextStyles
 import com.citysavior.android.presentation.common.layout.DefaultLayout
-import com.citysavior.android.presentation.home.component.CategoryItem
-import com.citysavior.android.presentation.home.component.CustomChip
-import com.citysavior.android.presentation.home.component.DailyProgress
-import com.citysavior.android.presentation.profile.component.AchievementItem
-import com.citysavior.android.presentation.profile.component.ProfileBox
-import com.citysavior.android.presentation.profile.component.ProfileStatItem
+import com.citysavior.android.presentation.profile.base.component.AchievementItem
+import com.citysavior.android.presentation.profile.base.component.ProfileBox
+import com.citysavior.android.presentation.profile.base.component.ProfileStatItem
 
 
 @Composable

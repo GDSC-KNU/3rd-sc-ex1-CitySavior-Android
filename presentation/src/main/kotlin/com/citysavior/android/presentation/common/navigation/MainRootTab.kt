@@ -1,4 +1,4 @@
-package com.citysavior.android.presentation.common.view
+package com.citysavior.android.presentation.common.navigation
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -19,7 +19,6 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
@@ -27,8 +26,8 @@ import androidx.navigation.compose.rememberNavController
 import com.citysavior.android.presentation.common.constant.Colors
 import com.citysavior.android.presentation.common.constant.TextStyles
 import com.citysavior.android.presentation.common.utils.noRippleClickable
-import com.citysavior.android.presentation.home.view.HomeScreen
-import com.citysavior.android.presentation.profile.view.ProfileScreen
+import com.citysavior.android.presentation.home.base.HomeScreen
+import com.citysavior.android.presentation.profile.base.ProfileScreen
 
 enum class BottomNavRouter(
     val routePath: String,

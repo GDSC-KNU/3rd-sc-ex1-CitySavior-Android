@@ -1,4 +1,4 @@
-package com.citysavior.android.presentation.profile.component
+package com.citysavior.android.presentation.profile.base.component
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -20,7 +20,7 @@ import com.citysavior.android.presentation.common.constant.Colors
 import com.citysavior.android.presentation.common.constant.Sizes
 import com.citysavior.android.presentation.common.constant.TextStyles
 import com.citysavior.android.presentation.common.utils.drawColoredShadow
-import com.citysavior.android.presentation.home.component.CustomProgress
+import com.citysavior.android.presentation.home.base.component.CustomProgress
 
 @Composable
 fun AchievementItem(
