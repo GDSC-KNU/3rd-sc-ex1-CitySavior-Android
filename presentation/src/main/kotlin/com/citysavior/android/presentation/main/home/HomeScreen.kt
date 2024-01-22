@@ -1,4 +1,4 @@
-package com.citysavior.android.presentation.home.base
+package com.citysavior.android.presentation.main.home
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -23,9 +23,9 @@ import androidx.compose.ui.unit.sp
 import com.citysavior.android.presentation.common.constant.Sizes
 import com.citysavior.android.presentation.common.constant.TextStyles
 import com.citysavior.android.presentation.common.layout.DefaultLayout
-import com.citysavior.android.presentation.home.base.component.CategoryItem
-import com.citysavior.android.presentation.home.base.component.CustomChip
-import com.citysavior.android.presentation.home.base.component.DailyProgress
+import com.citysavior.android.presentation.main.home.component.CategoryItem
+import com.citysavior.android.presentation.main.home.component.CustomChip
+import com.citysavior.android.presentation.main.home.component.DailyProgress
 
 
 @Composable

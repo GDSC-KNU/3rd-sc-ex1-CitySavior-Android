@@ -1,10 +1,8 @@
-package com.citysavior.android.presentation.home.base.component
+package com.citysavior.android.presentation.main.home.component
 
 import androidx.compose.foundation.Canvas
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.progressSemantics
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.CornerRadius
@@ -16,7 +14,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
-import com.citysavior.android.presentation.common.constant.Sizes
 
 @Composable
 fun CustomProgress(

@@ -1,7 +1,7 @@
 package com.citysavior.android.navigation
 
 import com.citysavior.android.presentation.auth.navigation.AuthRoute
-import com.citysavior.android.presentation.common.navigation.MAIN_GRAPH_ROUTE_PATTERN
+import com.citysavior.android.presentation.main.navigation.MainRoute
 
 enum class TopLevelDestination(
     val routePath: String,
@@ -10,6 +10,6 @@ enum class TopLevelDestination(
         routePath = AuthRoute.ONBOARDING.route,
     ),
     MAIN(
-        routePath = MAIN_GRAPH_ROUTE_PATTERN,
+        routePath = MainRoute.MAIN.route,
     ),
 }

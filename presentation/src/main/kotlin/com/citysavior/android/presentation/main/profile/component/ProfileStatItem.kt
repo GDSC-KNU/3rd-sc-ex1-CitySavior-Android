@@ -1,11 +1,10 @@
-package com.citysavior.android.presentation.profile.base.component
+package com.citysavior.android.presentation.main.profile.component
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.ThumbUp
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text

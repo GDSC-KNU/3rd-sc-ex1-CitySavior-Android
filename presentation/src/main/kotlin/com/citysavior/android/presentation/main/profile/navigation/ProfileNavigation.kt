@@ -1,9 +1,9 @@
-package com.citysavior.android.presentation.profile.navigation
+package com.citysavior.android.presentation.main.profile.navigation
 
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
-import com.citysavior.android.presentation.profile.base.ProfileScreen
+import com.citysavior.android.presentation.main.profile.ProfileScreen
 
 const val PROFILE_GRAPH_ROUTE_PATTERN = "/profile"
 

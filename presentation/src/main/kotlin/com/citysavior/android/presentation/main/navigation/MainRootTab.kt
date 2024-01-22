@@ -1,4 +1,4 @@
-package com.citysavior.android.presentation.common.navigation
+package com.citysavior.android.presentation.main.navigation
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -26,10 +26,8 @@ import androidx.navigation.compose.rememberNavController
 import com.citysavior.android.presentation.common.constant.Colors
 import com.citysavior.android.presentation.common.constant.TextStyles
 import com.citysavior.android.presentation.common.utils.noRippleClickable
-import com.citysavior.android.presentation.home.base.HomeScreen
-import com.citysavior.android.presentation.home.navigation.homeGraph
-import com.citysavior.android.presentation.profile.base.ProfileScreen
-import com.citysavior.android.presentation.profile.navigation.profileGraph
+import com.citysavior.android.presentation.main.home.navigation.homeGraph
+import com.citysavior.android.presentation.main.profile.navigation.profileGraph
 
 enum class BottomNavRouter(
     val routePath: String,

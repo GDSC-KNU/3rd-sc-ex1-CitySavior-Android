@@ -1,4 +1,4 @@
-package com.citysavior.android.presentation.profile.base
+package com.citysavior.android.presentation.main.profile
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -16,9 +16,9 @@ import androidx.compose.ui.unit.dp
 import com.citysavior.android.presentation.common.constant.Sizes
 import com.citysavior.android.presentation.common.constant.TextStyles
 import com.citysavior.android.presentation.common.layout.DefaultLayout
-import com.citysavior.android.presentation.profile.base.component.AchievementItem
-import com.citysavior.android.presentation.profile.base.component.ProfileBox
-import com.citysavior.android.presentation.profile.base.component.ProfileStatItem
+import com.citysavior.android.presentation.main.profile.component.AchievementItem
+import com.citysavior.android.presentation.main.profile.component.ProfileBox
+import com.citysavior.android.presentation.main.profile.component.ProfileStatItem
 
 
 @Composable
