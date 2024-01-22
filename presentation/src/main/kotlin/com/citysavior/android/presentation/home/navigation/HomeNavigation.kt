@@ -6,18 +6,21 @@ import androidx.navigation.navigation
 import com.citysavior.android.presentation.home.base.HomeScreen
 
 const val HOME_GRAPH_ROUTE_PATTERN = "/home"
-const val HOME_ROUTE = "home"
 
 fun NavGraphBuilder.homeGraph(
     //TODO xxClick: () -> Unit,
 ){
     navigation(
         route = HOME_GRAPH_ROUTE_PATTERN,
-        startDestination = HOME_ROUTE,
+        startDestination = HomeRoute.HOME.route,
     ) {
-        composable(route = HOME_ROUTE) {
+        composable(route = HomeRoute.HOME.route) {
             HomeScreen()
         }
 
     }
+}
+
+enum class HomeRoute(val korean: String, val route: String) {
+    HOME("홈", "home"),
 }

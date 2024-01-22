@@ -1,12 +1,15 @@
 package com.citysavior.android.navigation
 
+import com.citysavior.android.presentation.auth.navigation.AuthRoute
+import com.citysavior.android.presentation.common.navigation.MAIN_GRAPH_ROUTE_PATTERN
+
 enum class TopLevelDestination(
     val routePath: String,
 ) {
-    LOGIN(
-        routePath = "/login",
+    AUTH(
+        routePath = AuthRoute.ONBOARDING.route,
     ),
     MAIN(
-        routePath = "/",
+        routePath = MAIN_GRAPH_ROUTE_PATTERN,
     ),
 }

@@ -6,18 +6,21 @@ import androidx.navigation.navigation
 import com.citysavior.android.presentation.profile.base.ProfileScreen
 
 const val PROFILE_GRAPH_ROUTE_PATTERN = "/profile"
-const val PROFILE_ROUTE = "profile"
 
 fun NavGraphBuilder.profileGraph(
     //TODO xxClick: () -> Unit,
 ){
     navigation(
         route = PROFILE_GRAPH_ROUTE_PATTERN,
-        startDestination = PROFILE_ROUTE,
+        startDestination = ProfileRoute.PROFILE.route,
     ) {
-        composable(route = PROFILE_ROUTE) {
+        composable(route = ProfileRoute.PROFILE.route) {
             ProfileScreen()
         }
 
     }
+}
+
+enum class ProfileRoute(val korean: String, val route: String) {
+    PROFILE("프로필", "profile"),
 }
