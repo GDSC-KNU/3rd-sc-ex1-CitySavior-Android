@@ -27,7 +27,9 @@ import com.citysavior.android.presentation.common.constant.Colors
 import com.citysavior.android.presentation.common.constant.TextStyles
 import com.citysavior.android.presentation.common.utils.noRippleClickable
 import com.citysavior.android.presentation.home.base.HomeScreen
+import com.citysavior.android.presentation.home.navigation.homeGraph
 import com.citysavior.android.presentation.profile.base.ProfileScreen
+import com.citysavior.android.presentation.profile.navigation.profileGraph
 
 enum class BottomNavRouter(
     val routePath: String,
@@ -90,15 +92,11 @@ fun MainRootTab(){
             startDestination = BottomNavRouter.MAP.routePath,
             modifier = Modifier.padding(innerPadding)
         ) {
-            composable(route = BottomNavRouter.HOME.routePath) {
-                HomeScreen()
-            }
+            homeGraph()
             composable(route = BottomNavRouter.MAP.routePath) {
                 Text("구글맵")
             }
-            composable(route = BottomNavRouter.PROFILE.routePath) {
-                ProfileScreen()
-            }
+            profileGraph()
         }
     }
 }
