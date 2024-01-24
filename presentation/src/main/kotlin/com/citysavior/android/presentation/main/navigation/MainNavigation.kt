@@ -14,6 +14,6 @@ fun NavGraphBuilder.mainGraph(
     }
 }
 
-enum class MainRoute(val korean: String, val route: String) {
-    MAIN("메인", "/"),
+sealed class MainRoute(val korean: String, val route: String) {
+    object MAIN: MainRoute("메인", "/")
 }

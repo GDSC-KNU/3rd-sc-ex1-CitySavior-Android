@@ -21,6 +21,6 @@ fun NavGraphBuilder.profileGraph(
     }
 }
 
-enum class ProfileRoute(val korean: String, val route: String) {
-    PROFILE("프로필", "profile"),
+sealed class ProfileRoute(val korean: String, val route: String) {
+    object PROFILE : ProfileRoute("프로필", "profile")
 }

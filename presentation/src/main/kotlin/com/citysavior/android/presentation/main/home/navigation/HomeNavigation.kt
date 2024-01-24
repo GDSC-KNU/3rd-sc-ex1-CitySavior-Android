@@ -21,6 +21,6 @@ fun NavGraphBuilder.homeGraph(
     }
 }
 
-enum class HomeRoute(val korean: String, val route: String) {
-    HOME("홈", "home"),
+sealed class HomeRoute(val korean: String, val route: String) {
+    object HOME: HomeRoute("홈", "home")
 }
