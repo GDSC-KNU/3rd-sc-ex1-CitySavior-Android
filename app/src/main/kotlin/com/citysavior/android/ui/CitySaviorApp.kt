@@ -23,6 +23,7 @@ import androidx.navigation.NavDestination.Companion.hierarchy
 import com.citysavior.android.R
 import com.citysavior.android.core.utils.NetworkMonitor
 import com.citysavior.android.navigation.CitySaviorNavHost
+import timber.log.Timber
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -37,7 +38,7 @@ fun CitySaviorApp(
     val notConnectedMessage = stringResource(R.string.not_connected)
     LaunchedEffect(isOffline) {
         if (isOffline) {
-            Log.d("CitySaviorApp", "isOffline: $isOffline")
+            Timber.d("CitySaviorApp", "isOffline: $isOffline")
             snackbarHostState.showSnackbar(
                 message = notConnectedMessage,
                 duration = SnackbarDuration.Indefinite,
