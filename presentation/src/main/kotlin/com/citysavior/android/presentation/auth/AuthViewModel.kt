@@ -1,4 +1,4 @@
-package com.citysavior.android.presentation.auth.login
+package com.citysavior.android.presentation.auth
 
 import androidx.lifecycle.ViewModel
 import com.citysavior.android.domain.model.common.onError
