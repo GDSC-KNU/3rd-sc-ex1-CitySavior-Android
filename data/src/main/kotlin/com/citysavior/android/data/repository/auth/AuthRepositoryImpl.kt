@@ -2,13 +2,12 @@ package com.citysavior.android.data.repository.auth
 
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
 import com.citysavior.android.data.api.ApiService
 import com.citysavior.android.data.dto.auth.request.LoginRequestV1
 import com.citysavior.android.data.dto.auth.request.SignupRequestV1
-import com.citysavior.android.data.dto.auth.response.toDomain
-import com.citysavior.android.data.utils.invokeApiAndConvertAsync
 import com.citysavior.android.domain.model.auth.JwtToken
 import com.citysavior.android.domain.model.common.Async
 import com.citysavior.android.domain.repository.auth.AuthRepository
@@ -42,6 +41,24 @@ class AuthRepositoryImpl @Inject constructor(
 //        )
     }
 
+    override suspend fun getAfterOnBoarding(): Async<Boolean> {
+        val resp =  dataStore.data.map {
+            it[AFTER_ONBOARDING]
+        }.first()
+        return Async.Success(resp ?: false)
+    }
+
+    override suspend fun setAfterOnBoarding(): Async<Unit> {
+        try {
+            dataStore.edit {
+                it[AFTER_ONBOARDING] = true
+            }
+        }catch (e: Exception){
+            return Async.Error(e)
+        }
+        return Async.Success(Unit)
+    }
+
     /**
      * UUID를 가져오거나 없으면 생성해서 저장하고 가져온다.
      */
@@ -63,5 +80,6 @@ class AuthRepositoryImpl @Inject constructor(
 
     companion object {
         val UUID = stringPreferencesKey("uuid")
+        val AFTER_ONBOARDING = booleanPreferencesKey("after_onboarding")
     }
 }
