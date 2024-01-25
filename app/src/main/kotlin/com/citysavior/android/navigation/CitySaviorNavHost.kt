@@ -11,12 +11,12 @@ import com.citysavior.android.ui.CitySaviorAppState
 fun CitySaviorNavHost(
     appState: CitySaviorAppState,
     modifier: Modifier = Modifier,
-    startDestination: String = TopLevelDestination.START.routePath,
+    startDestination: TopLevelDestination = TopLevelDestination.START,
 ) {
     val navController = appState.navController
     NavHost(
         navController = navController,
-        startDestination = startDestination,
+        startDestination = startDestination.routePath,
         modifier = modifier,
     ){
         authGraph(
