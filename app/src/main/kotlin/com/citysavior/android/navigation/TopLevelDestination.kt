@@ -6,8 +6,11 @@ import com.citysavior.android.presentation.main.navigation.MainRoute
 enum class TopLevelDestination(
     val routePath: String,
 ) {
-    AUTH(
+    START(
         routePath = AuthRoute.ONBOARDING.route,
+    ),
+    AUTH(
+        routePath = AuthRoute.SIGNUP.route,
     ),
     MAIN(
         routePath = MainRoute.MAIN.route,
