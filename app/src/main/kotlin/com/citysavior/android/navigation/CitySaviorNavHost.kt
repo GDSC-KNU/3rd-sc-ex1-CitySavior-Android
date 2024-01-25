@@ -11,7 +11,7 @@ import com.citysavior.android.ui.CitySaviorAppState
 fun CitySaviorNavHost(
     appState: CitySaviorAppState,
     modifier: Modifier = Modifier,
-    startDestination: String = TopLevelDestination.MAIN.routePath,
+    startDestination: String = TopLevelDestination.START.routePath,
 ) {
     val navController = appState.navController
     NavHost(
@@ -19,7 +19,29 @@ fun CitySaviorNavHost(
         startDestination = startDestination,
         modifier = modifier,
     ){
-        authGraph()
+        authGraph(
+            onboardingButtonClick = {// 온보딩 이후 로그인
+                navController.navigate(TopLevelDestination.AUTH.routePath){
+                    popUpTo(TopLevelDestination.START.routePath){
+                        inclusive = true
+                    }
+                }
+            },
+            loginButtonClick = {// 로그인 이후 메인
+                navController.navigate(TopLevelDestination.MAIN.routePath){
+                    popUpTo(TopLevelDestination.AUTH.routePath){
+                        inclusive = true
+                    }
+                }
+            },
+            signupButtonClick = {// 회원가입 이후 메인
+                navController.navigate(TopLevelDestination.MAIN.routePath){
+                    popUpTo(TopLevelDestination.AUTH.routePath){
+                        inclusive = true
+                    }
+                }
+            },
+        )
         mainGraph(navController)
     }
 }
