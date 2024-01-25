@@ -1,6 +1,5 @@
 package com.citysavior.android.presentation.auth.onboarding
 
-import androidx.annotation.StringRes
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -18,6 +17,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -26,16 +26,35 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.citysavior.android.presentation.R
+import com.citysavior.android.presentation.auth.AuthViewModel
 import com.citysavior.android.presentation.common.constant.Colors
 import com.citysavior.android.presentation.common.constant.Sizes
 import com.citysavior.android.presentation.common.constant.TextStyles
 import com.citysavior.android.presentation.common.layout.DefaultLayout
+import kotlinx.coroutines.launch
 
 @Composable
 fun OnboardingScreen(
     startButtonClick: () -> Unit = {},
+    viewModel: AuthViewModel = hiltViewModel(),
 ) {
+    val composeCoroutineScope = rememberCoroutineScope()
+    PreviewWrapper(
+        startButtonClick = {
+            composeCoroutineScope.launch {
+                viewModel.onBoardingDone()
+                startButtonClick()
+            }
+       },
+    )
+}
+
+@Composable
+private fun PreviewWrapper(
+    startButtonClick: () -> Unit = {},
+){
     DefaultLayout {
         Column(
             modifier = Modifier
@@ -120,9 +139,5 @@ private fun IconTextRow(
 @Preview
 @Composable
 fun OnboardingScreenPreview2() {
-    OnboardingScreen(
-        startButtonClick = {
-
-        }
-    )
+    PreviewWrapper()
 }
