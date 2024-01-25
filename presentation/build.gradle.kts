@@ -51,6 +51,9 @@ dependencies {
     //hlit
     implementation(libs.hilt.android)
     kapt(libs.dagger.hilt.compiler)
+
+    //timber
+    implementation(libs.timber)
 }
 
 kapt {

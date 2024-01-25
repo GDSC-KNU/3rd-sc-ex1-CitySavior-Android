@@ -43,6 +43,7 @@ android {
     }
     buildFeatures {
         compose = true
+        buildConfig = true
     }
     composeOptions {
         kotlinCompilerExtensionVersion = libs.versions.compose.compiler.get()
@@ -83,6 +84,9 @@ dependencies {
     implementation(libs.room.runtime)
     implementation(libs.room.ktx)
     annotationProcessor(libs.room.compiler)
+
+    //timber
+    implementation(libs.timber)
 
     implementation(project(":presentation"))
     implementation(project(":domain"))

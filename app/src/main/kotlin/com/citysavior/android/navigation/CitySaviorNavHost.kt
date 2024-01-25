@@ -6,6 +6,7 @@ import androidx.navigation.compose.NavHost
 import com.citysavior.android.presentation.auth.navigation.authGraph
 import com.citysavior.android.presentation.main.navigation.mainGraph
 import com.citysavior.android.ui.CitySaviorAppState
+import timber.log.Timber
 
 @Composable
 fun CitySaviorNavHost(
@@ -13,6 +14,7 @@ fun CitySaviorNavHost(
     modifier: Modifier = Modifier,
     startDestination: TopLevelDestination = TopLevelDestination.START,
 ) {
+    Timber.d("StartDestination: $startDestination")
     val navController = appState.navController
     NavHost(
         navController = navController,
