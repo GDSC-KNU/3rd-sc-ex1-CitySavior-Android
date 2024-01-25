@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">presentation</string>
+    <string name="onboarding0">Become a savior of your city</string>
+    <string name="onboarding_start_button">Start Report</string>
+    <string name="onboarding1">Report your city breakage</string>
+    <string name="onboarding2">Make you city safer</string>
+    <string name="onboarding3">Watch your city become safer</string>
 </resources>

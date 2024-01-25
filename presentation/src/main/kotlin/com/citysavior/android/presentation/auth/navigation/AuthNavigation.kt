@@ -3,6 +3,7 @@ package com.citysavior.android.presentation.auth.navigation
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
+import com.citysavior.android.presentation.auth.onboarding.OnboardingScreen
 
 
 fun NavGraphBuilder.authGraph(
@@ -12,7 +13,11 @@ fun NavGraphBuilder.authGraph(
         //TODO LoginScreen()
     }
     composable(route = AuthRoute.ONBOARDING.route) {
-        //TODO OnboardingScreen()
+        OnboardingScreen(
+            startButtonClick = {
+
+            }
+        )
     }
 }
 
