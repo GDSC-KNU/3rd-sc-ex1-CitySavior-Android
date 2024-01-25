@@ -1,10 +1,10 @@
 package com.citysavior.android.ui
 
+import android.util.Log
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Stable
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.navigation.NavController
 import androidx.navigation.NavDestination
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
@@ -14,6 +14,7 @@ import androidx.navigation.navOptions
 import com.citysavior.android.core.utils.NetworkMonitor
 import com.citysavior.android.navigation.TopLevelDestination
 import com.citysavior.android.navigation.TopLevelDestination.*
+import com.citysavior.android.presentation.auth.navigation.AuthRoute
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.map
@@ -50,7 +51,7 @@ class CitySaviorAppState(
 
     val currentTopLevelDestination: TopLevelDestination?
         @Composable get() = when (currentDestination?.route) {
-            LOGIN.routePath -> LOGIN
+            AUTH.routePath -> AUTH
             MAIN.routePath -> MAIN
             else -> null
         }
@@ -72,33 +73,5 @@ class CitySaviorAppState(
     val topLevelDestinations: List<TopLevelDestination> = TopLevelDestination.values().toList()
 
 
-    /**
-     * UI logic for navigating to a top level destination in the app. Top level destinations have
-     * only one copy of the destination of the back stack, and save and restore state whenever you
-     * navigate to and from it.
-     *
-     * @param topLevelDestination: The destination the app needs to navigate to.
-     */
-    fun navigateToTopLevelDestination(topLevelDestination: TopLevelDestination) {
-        val topLevelNavOptions = navOptions {
-            // Pop up to the start destination of the graph to
-            // avoid building up a large stack of destinations
-            // on the back stack as users select items
-            popUpTo(navController.graph.findStartDestination().id) {
-                saveState = true
-            }
-            // Avoid multiple copies of the same destination when
-            // reselecting the same item
-            launchSingleTop = true
-            // Restore state when reselecting a previously selected item
-            restoreState = true
-        }
-
-        //TODO
-//        when (topLevelDestination) {
-//            LOGIN -> navController.navigateLogin(topLevelNavOptions)
-//            MAIN -> navController.navigateMain(topLevelNavOptions)
-//        }
-    }
 
 }

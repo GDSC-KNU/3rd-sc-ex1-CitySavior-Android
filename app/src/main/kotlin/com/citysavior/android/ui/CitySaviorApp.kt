@@ -23,6 +23,7 @@ import androidx.navigation.NavDestination.Companion.hierarchy
 import com.citysavior.android.R
 import com.citysavior.android.core.utils.NetworkMonitor
 import com.citysavior.android.navigation.CitySaviorNavHost
+import com.citysavior.android.navigation.TopLevelDestination
 import timber.log.Timber
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -32,6 +33,7 @@ fun CitySaviorApp(
     appState: CitySaviorAppState = rememberCitySaviorAppState(
         networkMonitor = networkMonitor,
     ),
+    startDestination: TopLevelDestination = TopLevelDestination.START,
 ) {
     val isOffline by appState.isOffline.collectAsStateWithLifecycle()
     val snackbarHostState = remember { SnackbarHostState() }
@@ -57,6 +59,7 @@ fun CitySaviorApp(
         ) {
             CitySaviorNavHost(
                 appState = appState,
+                startDestination = startDestination,
             )
         }
     }

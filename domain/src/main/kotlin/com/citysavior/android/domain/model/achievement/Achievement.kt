@@ -14,7 +14,7 @@ class Achievement(
             name : String = "도시의 지킴이",
             description : String = "공공시설 신고 3건 달성하기",
             iconUrl : String = "https://picsum.photos/200/200",
-            category : Category = Category.UNKNOWN,
+            category : Category = Category.OTHER,
             goalCount : Int = 3,
         ) : Achievement{
             return Achievement(
