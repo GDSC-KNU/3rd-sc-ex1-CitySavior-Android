@@ -119,7 +119,6 @@ private fun IconTextRow(
 ){
     Row(
         modifier = Modifier
-            .padding(horizontal = 12.dp)
             .padding(vertical = 4.dp),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.Start,
