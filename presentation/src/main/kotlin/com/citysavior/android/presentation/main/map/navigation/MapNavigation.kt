@@ -11,7 +11,7 @@ fun NavGraphBuilder.mapGraph(
     //TODO xxClick: () -> Unit,
 ){
     composable(route = MapRoute.MAP.route) {
-        //MapScreen()
+        MapScreen()
     }
 }
 
