@@ -54,6 +54,11 @@ dependencies {
 
     //timber
     implementation(libs.timber)
+
+    //google maps
+    implementation(libs.google.map)
+    implementation(libs.map.compose)
+//    implementation(libs.map.location)
 }
 
 kapt {

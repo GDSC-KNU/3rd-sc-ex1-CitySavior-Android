@@ -38,6 +38,8 @@ material = "1.11.0"
 kakao-login = "2.19.0"
 compose-webview = "0.24.13-rc"
 timber = "5.0.1"
+google-map = "18.1.0"
+compose-map = "4.3.1"
 
 [libraries]
 ## -------- android -------- ## bundle
@@ -99,11 +101,13 @@ room-ktx = { group = "androidx.room", name = "room-ktx", version.ref = "room" }
 room-compiler = { group = "androidx.room", name = "room-compiler", version.ref = "room" }
 
 ## -------- kakao -------- ##
-kakao-login = { group = "com.kakao.sdk", name = "v2-user", version = "kakao-login" }
+kakao-login = { group = "com.kakao.sdk", name = "v2-user", version.ref = "kakao-login" }
 
 android-gradlePlugin = { group = "com.android.tools.build", name = "gradle", version.ref = "agp" }
 kotlin-gradlePlugin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlin" }
 timber = { group = "com.jakewharton.timber", name = "timber", version.ref = "timber" }
+google-map = { group = "com.google.android.gms", name = "play-services-maps", version.ref = "google-map" }
+map-compose = { group = "com.google.maps.android", name = "maps-compose", version.ref = "compose-map" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

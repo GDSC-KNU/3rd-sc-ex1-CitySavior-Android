@@ -1,3 +1,5 @@
+import org.jetbrains.kotlin.konan.properties.Properties
+
 @Suppress("DSL_SCOPE_VIOLATION") // TODO: Remove once KTIJ-19369 is fixed
 plugins {
     alias(libs.plugins.android.application)
@@ -6,6 +8,11 @@ plugins {
     alias(libs.plugins.kotlin.kapt)
     id("com.google.gms.google-services")
     id("com.google.android.gms.oss-licenses-plugin")
+}
+
+val properties = Properties()
+project.rootProject.file("local.properties").inputStream().use {
+    properties.load(it)
 }
 
 android {
@@ -23,6 +30,7 @@ android {
         vectorDrawables {
             useSupportLibrary = true
         }
+        resValue("string", "GOOGLE_MAPS_KEY", properties["google_maps_key"].toString())
     }
 
     buildTypes {
