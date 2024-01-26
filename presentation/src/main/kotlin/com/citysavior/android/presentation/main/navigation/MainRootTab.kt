@@ -26,7 +26,11 @@ import androidx.navigation.compose.rememberNavController
 import com.citysavior.android.presentation.common.constant.Colors
 import com.citysavior.android.presentation.common.constant.TextStyles
 import com.citysavior.android.presentation.common.utils.noRippleClickable
+import com.citysavior.android.presentation.main.home.navigation.HomeRoute
 import com.citysavior.android.presentation.main.home.navigation.homeGraph
+import com.citysavior.android.presentation.main.map.navigation.MapRoute
+import com.citysavior.android.presentation.main.map.navigation.mapGraph
+import com.citysavior.android.presentation.main.profile.navigation.ProfileRoute
 import com.citysavior.android.presentation.main.profile.navigation.profileGraph
 
 enum class BottomNavRouter(
@@ -34,9 +38,9 @@ enum class BottomNavRouter(
     val korean: String,
     val icon: ImageVector,
 ) {
-    HOME("home", "홈", Icons.Default.Home),
-    MAP("map", "지도", Icons.Default.Home),
-    PROFILE("profile", "내정보", Icons.Default.Home),
+    HOME(HomeRoute.START_ROUTE,"홈", Icons.Default.Home),
+    MAP(MapRoute.START_ROUTE,"지도", Icons.Default.Home),
+    PROFILE(ProfileRoute.START_ROUTE,"내정보", Icons.Default.Home),
 }
 
 
@@ -69,10 +73,9 @@ fun MainRootTab(){
                                 .noRippleClickable {
                                     mainNavHostController.navigate(item.routePath) {
                                         popUpTo(mainNavHostController.graph.startDestinationId) {
-                                            saveState = true
+                                            inclusive = false
                                         }
                                         launchSingleTop = true
-                                        restoreState = true
                                     }
                                 }
                         ) {
@@ -87,13 +90,11 @@ fun MainRootTab(){
     ) { innerPadding ->
         NavHost(
             navController = mainNavHostController,
-            startDestination = BottomNavRouter.MAP.routePath,
+            startDestination = BottomNavRouter.HOME.routePath,
             modifier = Modifier.padding(innerPadding)
         ) {
             homeGraph()
-            composable(route = BottomNavRouter.MAP.routePath) {
-                Text("구글맵")
-            }
+            mapGraph()
             profileGraph()
         }
     }
