@@ -23,13 +23,29 @@ class ReportRepositoryImpl @Inject constructor(
         latitude: Double,
         longitude: Double
     ): Async<List<ReportPoint>> {
-        return invokeApiAndConvertAsync(
-            api = { apiService.getReportInfo(latitude, longitude) },
-            convert = { it.points.toDomain() }
-        )
+        return Async.Success(listOf(
+            ReportPoint.fixture(id=1,latitude = 35.895401, longitude = 128.612033),
+            ReportPoint.fixture(id = 2,latitude = 35.89231, longitude = 128.61804),
+            ReportPoint.fixture(id=3,latitude = 35.89431, longitude = 128.61404),
+            ReportPoint.fixture(id=4,latitude = 35.89631, longitude = 128.61204),
+            ReportPoint.fixture(id=5,latitude = 35.895401, longitude = 128.612033),
+            ReportPoint.fixture(id=6,latitude = 35.90231, longitude = 128.61804),
+            ReportPoint.fixture(id=7,latitude = 35.90431, longitude = 128.61404),
+            ReportPoint.fixture(id=8, latitude = 35.90631, longitude = 128.61204),
+        ))
+//        return invokeApiAndConvertAsync(
+//            api = { apiService.getReportInfo(latitude, longitude) },
+//            convert = { it.points.toDomain() }
+//        )
     }
 
     override suspend fun getReportDetail(reportPoint: ReportPoint): Async<ReportPointDetail> {
+        return Async.Success(ReportPointDetail.fixture(
+            id = reportPoint.id,
+            latitude = reportPoint.latitude,
+            longitude = reportPoint.longitude,
+            category = reportPoint.category,
+        ))
         return invokeApiAndConvertAsync(
             api = { apiService.getReportDetail(reportPoint.id) },
             convert = { it.toDomain(reportPoint) }
