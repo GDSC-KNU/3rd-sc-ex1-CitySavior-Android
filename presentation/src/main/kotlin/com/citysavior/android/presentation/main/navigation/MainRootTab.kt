@@ -76,9 +76,10 @@ fun MainRootTab(){
                                 .noRippleClickable {
                                     mainNavHostController.navigate(item.routePath) {
                                         popUpTo(mainNavHostController.graph.startDestinationId) {
-                                            inclusive = false
+                                            saveState = true
                                         }
                                         launchSingleTop = true
+                                        restoreState = true
                                     }
                                 }
                         ) {
