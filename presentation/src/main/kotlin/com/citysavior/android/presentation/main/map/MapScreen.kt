@@ -3,7 +3,7 @@ package com.citysavior.android.presentation.main.map
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
-import androidx.compose.foundation.ScrollState
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -18,26 +18,29 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListState
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.KeyboardArrowLeft
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material3.BottomSheetDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.SheetValue
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -45,6 +48,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -52,9 +56,13 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.text.input.ImeAction
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.window.Dialog
+import androidx.compose.ui.window.DialogProperties
+import androidx.compose.ui.window.DialogWindowProvider
+import androidx.compose.ui.window.SecureFlagPolicy
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
@@ -76,7 +84,7 @@ import timber.log.Timber
 
 const val INITIAL_ZOOM_LEVEL = 15f
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
 fun MapScreen(
     mapViewModel: MapViewModel = hiltViewModel(),
@@ -116,6 +124,7 @@ fun MapScreen(
 //    }
 
     var showDialog by remember { mutableStateOf(false) }
+    var createNewReport by rememberSaveable { mutableStateOf(false) }
     var selectedReportId: Long? by remember { mutableStateOf(null) }
     Box(
         modifier = Modifier.fillMaxSize(),
@@ -146,16 +155,13 @@ fun MapScreen(
                 }
             }
         }
-        Box(
+        FloatingActionButton(
             modifier = Modifier
                 .align(Alignment.BottomEnd)
-                .padding(12.dp)
-                .size(52.dp)
-                .background(
-                    color = Colors.PRIMARY_BLUE,
-                    shape = CircleShape,
-                ),
-            contentAlignment = Alignment.Center,
+                .padding(12.dp),
+            shape = CircleShape,
+            containerColor = Colors.PRIMARY_BLUE,
+            onClick = { createNewReport = true }
         ) {
             Icon(
                 imageVector = Icons.Default.Add,
@@ -170,7 +176,7 @@ fun MapScreen(
      */
     if (showDialog) {
         val sheetState = rememberModalBottomSheetState()
-        val scrollState = rememberScrollState()
+        val scrollState = rememberLazyListState()
         val report =
             (reportPoints.value as Async.Success).data.find { it.id == selectedReportId }!!
         val scope = rememberCoroutineScope()
@@ -182,8 +188,7 @@ fun MapScreen(
             dragHandle = null,
             windowInsets = WindowInsets(top = 80),
         ) {
-            val isExpandedCondition =
-                scrollState.value > 0 || (sheetState.currentValue == SheetValue.Expanded) && (sheetState.targetValue == SheetValue.Expanded)
+            val isExpandedCondition =(sheetState.currentValue == SheetValue.Expanded) && (sheetState.targetValue == SheetValue.Expanded)
 
             val detail = report as? ReportPointDetail
             if (detail == null) { // Loading
@@ -212,6 +217,7 @@ fun MapScreen(
 
                 ModalMiddle(
                     detail = detail,
+                    isExpanded = isExpandedCondition,
                     scrollState = scrollState,
                     onAddCommentClicked = {
                         mapViewModel.createComment(detail.id, it)
@@ -222,6 +228,40 @@ fun MapScreen(
 
         }
 
+    }
+
+    if(createNewReport){
+        Dialog(
+            onDismissRequest = { createNewReport = false },
+            properties = DialogProperties(
+                usePlatformDefaultWidth = false,
+                securePolicy = SecureFlagPolicy.SecureOff
+            ),
+        ) {
+            (LocalView.current.parent as DialogWindowProvider).window.setDimAmount(0f)
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(Color.White)
+                    .padding(horizontal = 20.dp)
+            ){
+                TopAppBar(
+                    title = {},
+                    navigationIcon = {
+                        Icon(imageVector = Icons.AutoMirrored.Filled.KeyboardArrowLeft, contentDescription = null)
+                    },
+                )
+                Text(
+                    text = "신고하기",
+                    style = TextStyles.TITLE_MEDIUM2,
+                )
+                Text(
+                    text = "Add title",
+                    style = TextStyles.CONTENT_TEXT3_STYLE,
+                )
+
+            }
+        }
     }
 
 }
@@ -309,129 +349,125 @@ private fun ModalTop(
 
 }
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 private fun ModalMiddle(
     detail: ReportPointDetail,
     isExpanded: Boolean = false,
-    scrollState : ScrollState,
+    scrollState : LazyListState,
     onAddCommentClicked : (String) -> Unit = {},
 ) {
     val focusManager = LocalFocusManager.current
-    Column(
-        modifier = Modifier
-            .background(Color.White)
-            .verticalScroll(scrollState)
-    ) {
-        AsyncImage(
-            modifier = Modifier
-                .aspectRatio(1f),
-//                            .clip(RoundedCornerShape(Sizes.WIDGET_ROUND)),
-            model = detail.imgUrl,
-            contentDescription = null,
-            contentScale = ContentScale.Crop,
-        )
-        Spacer(modifier = Modifier.height(12.dp))
-        detail.comments.forEach {
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 8.dp),
-            ){
-                Column(
-                    modifier = Modifier.padding(horizontal = Sizes.SMALL_H_PADDING),
-                ) {
-                    Text(
-                        text = it.content,
-                        style = TextStyles.CONTENT_TEXT1_STYLE
-                    )
-                    Spacer(modifier = Modifier.height(4.dp))
-                    Text(
-                        text = it.createdDate.toString(),
-                        style = TextStyles.CONTENT_SMALL1_STYLE.copy(
-                            color = Colors.GREY_TEXT
-                        ),
-                    )
-                }
 
-                Spacer(modifier = Modifier.weight(1f))
-            }
-            if(detail.comments.last() == it){
-                HorizontalDivider(
-                    color = Colors.PRIMARY_BLUE,
-                    thickness = 1.2.dp
-                )
-            }else{
-                HorizontalDivider(
-                    color = Colors.DIVIDER_GREY,
-                )
-            }
-        }
-
-
-        var comment by remember { mutableStateOf("") }
-
-        Box(
-            modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp),
+    val sp = WindowInsets.systemBars.asPaddingValues()
+    val bottom = sp.calculateBottomPadding()
+    Box(modifier =Modifier.fillMaxSize().background(Color.White)) {
+        LazyColumn(
+            state = scrollState,
+            modifier = Modifier.background(Color.White)
         ) {
-            CustomTextEditField(
-                value = comment,
-                label = "댓글 입력",
-                onValueChange = { comment = it },
-                keyboardOptions = KeyboardOptions(
-                    imeAction = ImeAction.Done,
-                ),
-                keyboardActions = KeyboardActions(
-                    onDone = {
-                        focusManager.clearFocus()
-                        if (comment.isEmpty()) return@KeyboardActions
-                        onAddCommentClicked(comment)
-                        comment = ""
-                    }
-                ),
-            )
-            if(comment.isNotEmpty()){
-                Box(
+            item {
+                AsyncImage(
                     modifier = Modifier
-                        .align(Alignment.CenterEnd)
-                        .padding(end = 12.dp)
-                        .clickable {
+                        .aspectRatio(1f),
+                    model = detail.imgUrl,
+                    contentDescription = null,
+                    contentScale = ContentScale.Crop,
+                )
+            }
+            item {
+                detail.comments.forEach {
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(vertical = 8.dp),
+                    ) {
+                        Column(
+                            modifier = Modifier.padding(horizontal = Sizes.SMALL_H_PADDING),
+                        ) {
+                            Text(
+                                text = it.content,
+                                style = TextStyles.CONTENT_TEXT1_STYLE
+                            )
+                            Spacer(modifier = Modifier.height(4.dp))
+                            Text(
+                                text = it.createdDate.toString(),
+                                style = TextStyles.CONTENT_SMALL1_STYLE.copy(
+                                    color = Colors.GREY_TEXT
+                                ),
+                            )
+                        }
+
+                        Spacer(modifier = Modifier.weight(1f))
+                    }
+                    if (detail.comments.last() != it) {
+                        HorizontalDivider(
+                            color = Colors.DIVIDER_GREY,
+                        )
+                    }
+                }
+                Spacer(modifier = Modifier.height(12.dp))
+
+            }
+            item {
+                Spacer(modifier = Modifier.height(bottom))
+            }
+
+        }
+        Column(modifier = Modifier
+            .fillMaxWidth()
+            .align(Alignment.BottomCenter)) {
+            var comment by remember { mutableStateOf("") }
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth(),
+            ) {
+                CustomTextEditField(
+                    value = comment,
+                    label = "댓글 입력",
+                    onValueChange = { comment = it },
+                    keyboardOptions = KeyboardOptions(
+                        imeAction = ImeAction.Done,
+                    ),
+                    keyboardActions = KeyboardActions(
+                        onDone = {
                             focusManager.clearFocus()
-                            if (comment.isEmpty()) return@clickable
+                            if (comment.isEmpty()) return@KeyboardActions
                             onAddCommentClicked(comment)
                             comment = ""
-                        }.background(
-                            color = Colors.PRIMARY_BLUE,
-                            shape = RoundedCornerShape(2.dp),
-                        ).padding(vertical = 4.dp, horizontal = 10.dp)
-                ){
-                    Text(
-                        text = "등록",
-                        style = TextStyles.CONTENT_TEXT3_STYLE.copy(
-                            color = Color.White,
-                        ),
-                    )
+                        }
+                    ),
+                )
+                if(comment.isNotEmpty()){
+                    Box(
+                        modifier = Modifier
+                            .align(Alignment.CenterEnd)
+                            .padding(end = 12.dp)
+                            .clickable {
+                                focusManager.clearFocus()
+                                if (comment.isEmpty()) return@clickable
+                                onAddCommentClicked(comment)
+                                comment = ""
+                            }
+                            .background(
+                                color = Colors.PRIMARY_BLUE,
+                                shape = RoundedCornerShape(2.dp),
+                            )
+                            .padding(vertical = 4.dp, horizontal = 10.dp)
+                    ){
+                        Text(
+                            text = "등록",
+                            style = TextStyles.CONTENT_TEXT3_STYLE.copy(
+                                color = Color.White,
+                            ),
+                        )
+                    }
                 }
             }
+            //기기 바텀 네비게이션바 높이만큼 띄워주기 위한 Spacer
+            Box(modifier = Modifier.fillMaxWidth().height(bottom).background(Color.White))
         }
-
-        val sp = WindowInsets.systemBars.asPaddingValues()
-        val bottom = sp.calculateBottomPadding()
-        //기기 바텀 네비게이션바 높이만큼 띄워주기 위한 Spacer
-        Spacer(modifier = Modifier.height(bottom))
     }
-}
-
-
-@Preview(showBackground = true, backgroundColor = 0xFFFFFFFF)
-@Composable
-private fun ModelPreView() {
-    ModalTop(ReportPointDetail.fixture(), isExpanded = false)
-}
-
-@Preview(showBackground = true, backgroundColor = 0xFFFFFFFF)
-@Composable
-private fun ModalMiddlePreView() {
-    ModalMiddle(ReportPointDetail.fixture(), false, rememberScrollState())
 }
 
 
