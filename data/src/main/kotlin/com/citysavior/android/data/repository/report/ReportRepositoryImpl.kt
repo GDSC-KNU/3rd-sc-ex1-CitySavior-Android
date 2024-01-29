@@ -15,6 +15,7 @@ import okhttp3.RequestBody.Companion.asRequestBody
 import java.io.File
 import javax.inject.Inject
 import javax.inject.Singleton
+import kotlin.random.Random
 
 @Singleton
 class ReportRepositoryImpl @Inject constructor(
@@ -71,6 +72,8 @@ class ReportRepositoryImpl @Inject constructor(
     }
 
     override suspend fun createReportComment(reportPointId: Long, content: String): Async<Long> {
+        delay(400)
+        return Async.Success(Random.nextLong())
         val request = CreateReportCommentRequest(content)
         return invokeApiAndConvertAsync(
             api = { apiService.createComment(reportPointId, request) },
