@@ -9,6 +9,7 @@ import com.citysavior.android.domain.model.report.Category
 import com.citysavior.android.domain.model.report.ReportPoint
 import com.citysavior.android.domain.model.report.ReportPointDetail
 import com.citysavior.android.domain.repository.report.ReportRepository
+import kotlinx.coroutines.delay
 import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.asRequestBody
 import java.io.File
@@ -40,6 +41,7 @@ class ReportRepositoryImpl @Inject constructor(
     }
 
     override suspend fun getReportDetail(reportPoint: ReportPoint): Async<ReportPointDetail> {
+        delay(400)
         return Async.Success(ReportPointDetail.fixture(
             id = reportPoint.id,
             latitude = reportPoint.latitude,
