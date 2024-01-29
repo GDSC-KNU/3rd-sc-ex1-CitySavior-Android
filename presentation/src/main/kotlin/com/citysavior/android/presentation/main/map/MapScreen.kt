@@ -18,17 +18,22 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material3.BottomSheetDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.SheetValue
@@ -47,6 +52,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -56,6 +62,7 @@ import com.citysavior.android.domain.model.common.Async
 import com.citysavior.android.domain.model.report.ReportPointDetail
 import com.citysavior.android.presentation.common.component.CustomTextEditField
 import com.citysavior.android.presentation.common.constant.Colors
+import com.citysavior.android.presentation.common.constant.Sizes
 import com.citysavior.android.presentation.common.constant.TextStyles
 import com.citysavior.android.presentation.main.map.component.ReportMarker
 import com.google.android.gms.maps.model.CameraPosition
@@ -63,8 +70,6 @@ import com.google.android.gms.maps.model.LatLng
 import com.google.maps.android.compose.GoogleMap
 import com.google.maps.android.compose.MapProperties
 import com.google.maps.android.compose.MapUiSettings
-import com.google.maps.android.compose.MarkerComposable
-import com.google.maps.android.compose.MarkerState
 import com.google.maps.android.compose.rememberCameraPositionState
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -84,7 +89,7 @@ fun MapScreen(
     val cameraPositionState = rememberCameraPositionState {
         position = CameraPosition.fromLatLngZoom(knu, INITIAL_ZOOM_LEVEL)
     }
-    val uiSettings = remember { MapUiSettings(mapToolbarEnabled = false) }
+    val uiSettings = remember { MapUiSettings(mapToolbarEnabled = false, zoomControlsEnabled = false) }
     val properties = remember {
         MapProperties(
             isMyLocationEnabled = false, minZoomPreference = 8f, maxZoomPreference = 20f
@@ -112,44 +117,52 @@ fun MapScreen(
 
     var showDialog by remember { mutableStateOf(false) }
     var selectedReportId: Long? by remember { mutableStateOf(null) }
-    GoogleMap(
+    Box(
         modifier = Modifier.fillMaxSize(),
-        cameraPositionState = cameraPositionState,
-        uiSettings = uiSettings,
-        properties = properties,
     ) {
-
-        when (reportPoints.value) {
-            is Async.Loading -> {
-                Timber.d("loading")
-            }
-
-            is Async.Success -> {
-                val reports = (reportPoints.value as Async.Success).data
-                reports.forEach {
-                    ReportMarker(
-                        latitude = it.latitude,
-                        longitude = it.longitude,
-                        markerBitmap = null,
-                        onClick = {
-                            selectedReportId = it.id
-                            mapViewModel.getDetailReport(it.id)
-                            showDialog = true
-                        }
-                    )
+        GoogleMap(
+            modifier = Modifier.fillMaxSize(),
+            cameraPositionState = cameraPositionState,
+            uiSettings = uiSettings,
+            properties = properties,
+        ) {
+            when (reportPoints.value) {
+                is Async.Loading -> { Timber.d("loading") }
+                is Async.Error -> { Timber.d("error") }
+                is Async.Success -> {
+                    val reports = (reportPoints.value as Async.Success).data
+                    reports.forEach {
+                        ReportMarker(
+                            latitude = it.latitude,
+                            longitude = it.longitude,
+                            markerBitmap = null,
+                            onClick = {
+                                selectedReportId = it.id
+                                mapViewModel.getDetailReport(it.id)
+                                showDialog = true
+                            }
+                        )
+                    }
                 }
             }
-
-            is Async.Error -> {
-                Timber.d("error")
-            }
         }
-        MarkerComposable(
-            state = MarkerState(position = knu),
+        Box(
+            modifier = Modifier
+                .align(Alignment.BottomEnd)
+                .padding(12.dp)
+                .size(52.dp)
+                .background(
+                    color = Colors.PRIMARY_BLUE,
+                    shape = CircleShape,
+                ),
+            contentAlignment = Alignment.Center,
         ) {
-            Text(text = "this is compose marker")
+            Icon(
+                imageVector = Icons.Default.Add,
+                contentDescription = null,
+                tint = Color.White,
+            )
         }
-
     }
 
     /**
@@ -173,20 +186,15 @@ fun MapScreen(
                 scrollState.value > 0 || (sheetState.currentValue == SheetValue.Expanded) && (sheetState.targetValue == SheetValue.Expanded)
 
             val detail = report as? ReportPointDetail
-            Text(
-                text = "${sheetState.currentValue} : ${sheetState.targetValue}",
-            )
-            Text(
-                text = "${scrollState.value}",
-            )
             if (detail == null) { // Loading
                 Column(
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(300.dp)
                         .background(color = Color.White),
-
-                    ) {
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Center,
+                ) {
                     CircularProgressIndicator()
                 }
             } else { // Success
@@ -202,7 +210,13 @@ fun MapScreen(
                     }
                 )
 
-                ModalMiddle(detail = detail, scrollState = scrollState)
+                ModalMiddle(
+                    detail = detail,
+                    scrollState = scrollState,
+                    onAddCommentClicked = {
+                        mapViewModel.createComment(detail.id, it)
+                    }
+                )
 
             }
 
@@ -213,7 +227,7 @@ fun MapScreen(
 }
 
 @Composable
-fun ModalTop(
+private fun ModalTop(
     detail: ReportPointDetail,
     onIconClick : () -> Unit = {},
     isExpanded: Boolean = false,
@@ -273,7 +287,9 @@ fun ModalTop(
                     )
                     Text(
                         detail.description,
-                        style = TextStyles.TITLE_MEDIUM2
+                        style = TextStyles.CONTENT_TEXT2_STYLE.copy(
+                            fontWeight = TextStyles.MEDIUM
+                        )
                     )
 
                 }
@@ -294,10 +310,11 @@ fun ModalTop(
 }
 
 @Composable
-fun ModalMiddle(
+private fun ModalMiddle(
     detail: ReportPointDetail,
     isExpanded: Boolean = false,
     scrollState : ScrollState,
+    onAddCommentClicked : (String) -> Unit = {},
 ) {
     val focusManager = LocalFocusManager.current
     Column(
@@ -316,20 +333,36 @@ fun ModalMiddle(
         Spacer(modifier = Modifier.height(12.dp))
         detail.comments.forEach {
             Row(
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 8.dp),
             ){
-                Text(
-                    text = it.content,
-                    style = TextStyles.CONTENT_TEXT2_STYLE.copy(
-                        color = Colors.GREY_TEXT
-                    ),
-                )
+                Column(
+                    modifier = Modifier.padding(horizontal = Sizes.SMALL_H_PADDING),
+                ) {
+                    Text(
+                        text = it.content,
+                        style = TextStyles.CONTENT_TEXT1_STYLE
+                    )
+                    Spacer(modifier = Modifier.height(4.dp))
+                    Text(
+                        text = it.createdDate.toString(),
+                        style = TextStyles.CONTENT_SMALL1_STYLE.copy(
+                            color = Colors.GREY_TEXT
+                        ),
+                    )
+                }
+
                 Spacer(modifier = Modifier.weight(1f))
-                Text(
-                    text = it.createdDate.toString(),
-                    style = TextStyles.CONTENT_TEXT2_STYLE.copy(
-                        color = Colors.GREY_TEXT
-                    ),
+            }
+            if(detail.comments.last() == it){
+                HorizontalDivider(
+                    color = Colors.PRIMARY_BLUE,
+                    thickness = 1.2.dp
+                )
+            }else{
+                HorizontalDivider(
+                    color = Colors.DIVIDER_GREY,
                 )
             }
         }
@@ -337,20 +370,49 @@ fun ModalMiddle(
 
         var comment by remember { mutableStateOf("") }
 
-        CustomTextEditField(
-            value = comment,
-            label = "댓글 입력",
-            onValueChange = {comment = it},
-            keyboardOptions = KeyboardOptions(
-                imeAction = androidx.compose.ui.text.input.ImeAction.Done,
-            ),
-            keyboardActions = KeyboardActions(
-                onDone = {
-                    focusManager.clearFocus()
+        Box(
+            modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp),
+        ) {
+            CustomTextEditField(
+                value = comment,
+                label = "댓글 입력",
+                onValueChange = { comment = it },
+                keyboardOptions = KeyboardOptions(
+                    imeAction = ImeAction.Done,
+                ),
+                keyboardActions = KeyboardActions(
+                    onDone = {
+                        focusManager.clearFocus()
+                        if (comment.isEmpty()) return@KeyboardActions
+                        onAddCommentClicked(comment)
+                        comment = ""
+                    }
+                ),
+            )
+            if(comment.isNotEmpty()){
+                Box(
+                    modifier = Modifier
+                        .align(Alignment.CenterEnd)
+                        .padding(end = 12.dp)
+                        .clickable {
+                            focusManager.clearFocus()
+                            if (comment.isEmpty()) return@clickable
+                            onAddCommentClicked(comment)
+                            comment = ""
+                        }.background(
+                            color = Colors.PRIMARY_BLUE,
+                            shape = RoundedCornerShape(2.dp),
+                        ).padding(vertical = 4.dp, horizontal = 10.dp)
+                ){
+                    Text(
+                        text = "등록",
+                        style = TextStyles.CONTENT_TEXT3_STYLE.copy(
+                            color = Color.White,
+                        ),
+                    )
                 }
-            ),
-
-        )
+            }
+        }
 
         val sp = WindowInsets.systemBars.asPaddingValues()
         val bottom = sp.calculateBottomPadding()
@@ -362,13 +424,13 @@ fun ModalMiddle(
 
 @Preview(showBackground = true, backgroundColor = 0xFFFFFFFF)
 @Composable
-fun ModelPreView() {
+private fun ModelPreView() {
     ModalTop(ReportPointDetail.fixture(), isExpanded = false)
 }
 
 @Preview(showBackground = true, backgroundColor = 0xFFFFFFFF)
 @Composable
-fun ModalMiddlePreView() {
+private fun ModalMiddlePreView() {
     ModalMiddle(ReportPointDetail.fixture(), false, rememberScrollState())
 }
 
