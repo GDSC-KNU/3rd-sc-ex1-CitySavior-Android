@@ -58,6 +58,7 @@ import java.io.File
 @Composable
 fun CreateReportScreen(
     onBackIconClick : () -> Unit = {},
+    onUploadButtonClick : ( /*TODO*/) -> Unit = {},
 ) {
     val context = LocalContext.current
     val cameraPermissionState = rememberPermissionState(android.Manifest.permission.CAMERA)
@@ -100,6 +101,15 @@ fun CreateReportScreen(
         }
     }
 
+    val galleryLauncher = rememberLauncherForActivityResult(ActivityResultContracts.GetContent()){
+        if(it != null){
+            capturedImageUri = it
+        }else{
+            Timber.d("사진 가져오기 실패")
+        }
+
+    }
+
     var description by rememberSaveable { mutableStateOf("") }
     Column(
         modifier = Modifier
@@ -140,7 +150,8 @@ fun CreateReportScreen(
             )
         }else{
             Image(
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier
+                    .fillMaxWidth()
                     .aspectRatio(2f),
                 painter = rememberAsyncImagePainter(capturedImageUri),
                 contentScale = ContentScale.FillHeight,
@@ -209,7 +220,7 @@ fun CreateReportScreen(
                     vertical = 16.dp,
                 ),
                 onClick = {
-
+                    galleryLauncher.launch("image/*")
                 },
             ) {
                 Text(
@@ -255,7 +266,9 @@ fun CreateReportScreen(
                 horizontal = 50.dp,
                 vertical = 12.dp,
             ),
-            onClick = {},
+            onClick = {
+                onUploadButtonClick()
+            },
         ) {
             Text(
                 text = "Upload",
