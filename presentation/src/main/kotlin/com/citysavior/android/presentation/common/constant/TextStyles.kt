@@ -15,10 +15,12 @@ import com.citysavior.android.presentation.R
 object TextStyles {
     private val ROBOTO = FontFamily(
         Font(R.font.roboto_bold, FontWeight.W700),
-        Font(R.font.roboto_medium, FontWeight.W500)
+        Font(R.font.roboto_medium, FontWeight.W500),
+        Font(R.font.roboto_regular, FontWeight.W400)
     )
-    private val BOLD = FontWeight.W700
-    private val REGULAR = FontWeight.W500
+    val BOLD = FontWeight.W700
+    val MEDIUM = FontWeight.W500
+    val REGULAR = FontWeight.W400
 
     val TITLE_BIG = TextStyle(
         fontSize = 36.sp,
@@ -54,7 +56,7 @@ object TextStyles {
 
     val CONTENT_TEXT1_STYLE = TextStyle(
         fontSize = 18.sp,
-        fontWeight = FontWeight.W500,
+        fontWeight = REGULAR,
         fontFamily = ROBOTO,
     )
 

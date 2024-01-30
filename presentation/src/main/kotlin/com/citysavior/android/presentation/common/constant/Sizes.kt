@@ -2,7 +2,6 @@ package com.citysavior.android.presentation.common.constant
 
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
-import coil.size.Size
 
 
 /**
@@ -10,7 +9,9 @@ import coil.size.Size
  * You must use this size for all composable.
  */
 object Sizes {
+
     val DEFAULT_PADDING = 22.dp
+    val SMALL_H_PADDING = 12.dp
     val INTERVAL_LARGE1 = 60.dp
     val INTERVAL_LARGE2 = 40.dp
     val INTERVAL_LARGE3 = 30.dp
@@ -32,4 +33,5 @@ object Sizes {
 
     val CATEGORY_SIZE = DpSize(152.dp, 138.dp)
     val DAILY_PROGRESS_HEIGHT = 143.dp
+    val BUTTON_HEIGHT = 40.dp
 }

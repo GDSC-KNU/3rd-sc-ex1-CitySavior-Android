@@ -9,11 +9,13 @@ import com.citysavior.android.domain.model.report.Category
 import com.citysavior.android.domain.model.report.ReportPoint
 import com.citysavior.android.domain.model.report.ReportPointDetail
 import com.citysavior.android.domain.repository.report.ReportRepository
+import kotlinx.coroutines.delay
 import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.asRequestBody
 import java.io.File
 import javax.inject.Inject
 import javax.inject.Singleton
+import kotlin.random.Random
 
 @Singleton
 class ReportRepositoryImpl @Inject constructor(
@@ -23,13 +25,30 @@ class ReportRepositoryImpl @Inject constructor(
         latitude: Double,
         longitude: Double
     ): Async<List<ReportPoint>> {
-        return invokeApiAndConvertAsync(
-            api = { apiService.getReportInfo(latitude, longitude) },
-            convert = { it.points.toDomain() }
-        )
+        return Async.Success(listOf(
+            ReportPoint.fixture(id=1,latitude = 35.895401, longitude = 128.612033),
+            ReportPoint.fixture(id = 2,latitude = 35.89231, longitude = 128.61804),
+            ReportPoint.fixture(id=3,latitude = 35.89431, longitude = 128.61404),
+            ReportPoint.fixture(id=4,latitude = 35.89631, longitude = 128.61204),
+            ReportPoint.fixture(id=5,latitude = 35.895401, longitude = 128.612033),
+            ReportPoint.fixture(id=6,latitude = 35.90231, longitude = 128.61804),
+            ReportPoint.fixture(id=7,latitude = 35.90431, longitude = 128.61404),
+            ReportPoint.fixture(id=8, latitude = 35.90631, longitude = 128.61204),
+        ))
+//        return invokeApiAndConvertAsync(
+//            api = { apiService.getReportInfo(latitude, longitude) },
+//            convert = { it.points.toDomain() }
+//        )
     }
 
     override suspend fun getReportDetail(reportPoint: ReportPoint): Async<ReportPointDetail> {
+        delay(400)
+        return Async.Success(ReportPointDetail.fixture(
+            id = reportPoint.id,
+            latitude = reportPoint.latitude,
+            longitude = reportPoint.longitude,
+            category = reportPoint.category,
+        ))
         return invokeApiAndConvertAsync(
             api = { apiService.getReportDetail(reportPoint.id) },
             convert = { it.toDomain(reportPoint) }
@@ -53,6 +72,8 @@ class ReportRepositoryImpl @Inject constructor(
     }
 
     override suspend fun createReportComment(reportPointId: Long, content: String): Async<Long> {
+        delay(400)
+        return Async.Success(Random.nextLong())
         val request = CreateReportCommentRequest(content)
         return invokeApiAndConvertAsync(
             api = { apiService.createComment(reportPointId, request) },
