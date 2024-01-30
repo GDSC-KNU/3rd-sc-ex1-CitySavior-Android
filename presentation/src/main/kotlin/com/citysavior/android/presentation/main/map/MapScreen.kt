@@ -71,6 +71,7 @@ import com.citysavior.android.presentation.common.constant.Colors
 import com.citysavior.android.presentation.common.constant.Sizes
 import com.citysavior.android.presentation.common.constant.TextStyles
 import com.citysavior.android.presentation.main.map.component.ReportMarker
+import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
 import com.google.maps.android.compose.GoogleMap
@@ -81,6 +82,7 @@ import kotlinx.coroutines.launch
 import timber.log.Timber
 
 const val INITIAL_ZOOM_LEVEL = 15f
+const val MARKER_ZOOM_LEVEL = 16f
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
@@ -120,6 +122,7 @@ fun MapScreen(
 //            job.cancel()
 //        }
 //    }
+    val scope = rememberCoroutineScope()
 
     var showDialog by remember { mutableStateOf(false) }
     var createNewReport by rememberSaveable { mutableStateOf(false) }
@@ -147,6 +150,18 @@ fun MapScreen(
                                 selectedReportId = it.id
                                 mapViewModel.getDetailReport(it.id)
                                 showDialog = true
+                                val zoom = if(cameraPositionState.position.zoom < MARKER_ZOOM_LEVEL)
+                                    MARKER_ZOOM_LEVEL
+                                else
+                                    cameraPositionState.position.zoom
+
+                                val cameraUpdate = CameraUpdateFactory.newLatLngZoom(
+                                    LatLng(it.latitude, it.longitude),
+                                    zoom
+                                )
+                                scope.launch {
+                                    cameraPositionState.animate(cameraUpdate, 300)
+                                }
                             }
                         )
                     }
