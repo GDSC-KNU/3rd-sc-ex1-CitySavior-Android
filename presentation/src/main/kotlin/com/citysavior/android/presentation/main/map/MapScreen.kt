@@ -28,7 +28,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.KeyboardArrowLeft
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material3.BottomSheetDefaults
@@ -40,7 +39,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.SheetValue
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -239,28 +237,10 @@ fun MapScreen(
             ),
         ) {
             (LocalView.current.parent as DialogWindowProvider).window.setDimAmount(0f)
-            Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .background(Color.White)
-                    .padding(horizontal = 20.dp)
-            ){
-                TopAppBar(
-                    title = {},
-                    navigationIcon = {
-                        Icon(imageVector = Icons.AutoMirrored.Filled.KeyboardArrowLeft, contentDescription = null)
-                    },
-                )
-                Text(
-                    text = "신고하기",
-                    style = TextStyles.TITLE_MEDIUM2,
-                )
-                Text(
-                    text = "Add title",
-                    style = TextStyles.CONTENT_TEXT3_STYLE,
-                )
+            CreateReportScreen(
+                onBackIconClick = { createNewReport = false },
 
-            }
+            )
         }
     }
 
@@ -361,7 +341,9 @@ private fun ModalMiddle(
 
     val sp = WindowInsets.systemBars.asPaddingValues()
     val bottom = sp.calculateBottomPadding()
-    Box(modifier =Modifier.fillMaxSize().background(Color.White)) {
+    Box(modifier = Modifier
+        .fillMaxSize()
+        .background(Color.White)) {
         LazyColumn(
             state = scrollState,
             modifier = Modifier.background(Color.White)
@@ -465,7 +447,10 @@ private fun ModalMiddle(
                 }
             }
             //기기 바텀 네비게이션바 높이만큼 띄워주기 위한 Spacer
-            Box(modifier = Modifier.fillMaxWidth().height(bottom).background(Color.White))
+            Box(modifier = Modifier
+                .fillMaxWidth()
+                .height(bottom)
+                .background(Color.White))
         }
     }
 }

@@ -15,9 +15,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.VisualTransformation
+import androidx.compose.ui.unit.Dp
 import com.citysavior.android.presentation.common.constant.Colors
 import com.citysavior.android.presentation.common.constant.Sizes
 import com.citysavior.android.presentation.common.constant.TextStyles
@@ -30,26 +32,28 @@ fun CustomTextEditField(
         keyboardType = KeyboardType.Text,
         imeAction = ImeAction.Next
     ),
+    backgroundColor : Color = Colors.WHITE,
     visualTransformation: VisualTransformation = VisualTransformation.None,
     keyboardActions: KeyboardActions = KeyboardActions.Default,
     value: String,
     onValueChange: (String) -> Unit = {},
     interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
     label: String="",
+    startPadding : Dp = Sizes.INTERVAL1,
     isError : Boolean = false,
 ) {
     Row(
         modifier = modifier
             .defaultMinSize(minHeight = Sizes.BUTTON_HEIGHT)
             .fillMaxWidth()
-            .background(color = Colors.WHITE),
+            .background(color = backgroundColor),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.Start
     ) {
         BasicTextField(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(start = Sizes.INTERVAL1),
+                .padding(start = startPadding),
             textStyle = TextStyles.CONTENT_TEXT2_STYLE,
             maxLines = 1,
             visualTransformation = visualTransformation,
