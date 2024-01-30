@@ -1,5 +1,13 @@
 package com.citysavior.android.presentation.main.map
 
+import android.content.ContentResolver
+import android.content.ContentValues
+import android.net.Uri
+import android.os.Environment
+import android.provider.MediaStore
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -24,23 +32,74 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import androidx.core.content.FileProvider
+import coil.compose.rememberAsyncImagePainter
 import com.citysavior.android.presentation.common.component.CustomTextEditField
 import com.citysavior.android.presentation.common.constant.Colors
 import com.citysavior.android.presentation.common.constant.Sizes
 import com.citysavior.android.presentation.common.constant.TextStyles
 import com.citysavior.android.presentation.common.utils.noRippleClickable
+import com.google.accompanist.permissions.ExperimentalPermissionsApi
+import com.google.accompanist.permissions.isGranted
+import com.google.accompanist.permissions.rememberPermissionState
+import timber.log.Timber
+import java.io.File
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalPermissionsApi::class)
 @Composable
 fun CreateReportScreen(
     onBackIconClick : () -> Unit = {},
 ) {
+    val context = LocalContext.current
+    val cameraPermissionState = rememberPermissionState(android.Manifest.permission.CAMERA)
+
+
+
+
+    var capturedImageUri by remember {
+        mutableStateOf<Uri>(Uri.EMPTY)
+    }
+
+
+
+    var photoUri : Uri? = null
+
+    val takeCameraLauncher = rememberLauncherForActivityResult(ActivityResultContracts.TakePicture()){
+        if(it){
+            Timber.d("사진 저장 성공 ${photoUri.toString()}")
+            capturedImageUri = photoUri!!
+            val contentValues = ContentValues().apply {
+                val imageFileName = "CITY_SAVIOR_${System.currentTimeMillis()}.jpg"
+                put(MediaStore.Images.Media.DISPLAY_NAME, imageFileName)
+                put(MediaStore.Images.Media.MIME_TYPE, "image/jpeg")
+            }
+
+            val resolver: ContentResolver = context.contentResolver
+
+            // Insert the image into the MediaStore
+            val externalUri: Uri? =
+                resolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, contentValues)
+
+            // Write the image data to the MediaStore
+            externalUri?.let { externalMediaUri ->
+                resolver.openOutputStream(externalMediaUri)?.use { outputStream ->
+                    resolver.openInputStream(photoUri!!)?.copyTo(outputStream)
+                }
+            }
+        }else{
+            Timber.d("사진 저장 실패")
+        }
+    }
+
     var description by rememberSaveable { mutableStateOf("") }
     Column(
         modifier = Modifier
@@ -72,12 +131,22 @@ fun CreateReportScreen(
             style = TextStyles.TITLE_MEDIUM2,
         )
         Spacer(modifier = Modifier.height(20.dp))
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .aspectRatio(2f)
-                .background(Colors.WIDGET_BG_GREY)
-        )
+        if(capturedImageUri == Uri.EMPTY) {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .aspectRatio(2f)
+                    .background(Colors.WIDGET_BG_GREY)
+            )
+        }else{
+            Image(
+                modifier = Modifier.fillMaxWidth()
+                    .aspectRatio(2f),
+                painter = rememberAsyncImagePainter(capturedImageUri),
+                contentScale = ContentScale.FillHeight,
+                contentDescription = null
+            )
+        }
         Spacer(modifier = Modifier.height(20.dp))
         Row{
             TextButton(
@@ -95,7 +164,27 @@ fun CreateReportScreen(
                 contentPadding = PaddingValues(
                     vertical = 16.dp,
                 ),
-                onClick = {},
+                onClick = {
+                    if (cameraPermissionState.status.isGranted) {
+                        Timber.d("카메라 권한 허용됨")
+                        val directory = context.getExternalFilesDir(Environment.DIRECTORY_PICTURES)
+
+                        val photoFile = File.createTempFile(
+                            "selected_image",
+                            ".jpg",
+                            directory,
+                        ) // 해당 폴더에 임시 파일을 만든다.
+                        photoUri = FileProvider.getUriForFile(
+                            context,
+                            context.packageName + ".provider",
+                            photoFile
+                        )
+
+                        takeCameraLauncher.launch(photoUri)
+                    } else {
+                        cameraPermissionState.launchPermissionRequest()
+                    }
+                },
             ) {
                 Text(
                     text = "Take photo",
@@ -119,7 +208,9 @@ fun CreateReportScreen(
                 contentPadding = PaddingValues(
                     vertical = 16.dp,
                 ),
-                onClick = {},
+                onClick = {
+
+                },
             ) {
                 Text(
                     text = "Browse gallery",
@@ -176,3 +267,4 @@ fun CreateReportScreen(
         Spacer(modifier = Modifier.height(20.dp))
     }
 }
+
