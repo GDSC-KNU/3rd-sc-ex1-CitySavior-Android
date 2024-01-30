@@ -40,6 +40,7 @@ compose-webview = "0.24.13-rc"
 timber = "5.0.1"
 google-map = "18.1.0"
 compose-map = "4.3.1"
+permission = "0.32.0"
 
 [libraries]
 ## -------- android -------- ## bundle
@@ -108,6 +109,7 @@ kotlin-gradlePlugin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", ve
 timber = { group = "com.jakewharton.timber", name = "timber", version.ref = "timber" }
 google-map = { group = "com.google.android.gms", name = "play-services-maps", version.ref = "google-map" }
 map-compose = { group = "com.google.maps.android", name = "maps-compose", version.ref = "compose-map" }
+accompanist-permission = { group = "com.google.accompanist", name = "accompanist-permissions", version.ref = "permission" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

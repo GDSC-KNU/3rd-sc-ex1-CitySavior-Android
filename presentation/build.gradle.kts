@@ -58,6 +58,9 @@ dependencies {
     //google maps
     implementation(libs.google.map)
     implementation(libs.map.compose)
+
+    //permission
+    implementation(libs.accompanist.permission)
 //    implementation(libs.map.location)
 }
 
