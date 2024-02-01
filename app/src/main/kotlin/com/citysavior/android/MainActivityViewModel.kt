@@ -28,8 +28,13 @@ class MainActivityViewModel @Inject constructor(
             }
 
         jwtTokenRepository.getJwtToken()
-            .onSuccess { emit(MainActivityUiState.AfterLogin) }
-            .onError { emit(MainActivityUiState.BeforeLogin) }
+            .collect{
+                it.onSuccess {
+                    emit(MainActivityUiState.AfterLogin)
+                }.onError {
+                    emit(MainActivityUiState.BeforeLogin)
+                }
+            }
     }.stateIn(viewModelScope, SharingStarted.Lazily, MainActivityUiState.Loading)
 }
 
