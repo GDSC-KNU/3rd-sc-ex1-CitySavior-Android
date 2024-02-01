@@ -51,7 +51,7 @@ class JwtTokenRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun getJwtToken(): Flow<Async<JwtToken>> {
+    override fun getJwtToken(): Flow<Async<JwtToken>> {
         return datastore.data.map {
             val accessToken = it[ACCESS_TOKEN]
             val refreshToken = it[REFRESH_TOKEN]

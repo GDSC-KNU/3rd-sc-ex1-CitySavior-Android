@@ -41,7 +41,7 @@ class UserRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun getUserPoint(): Flow<Async<Point>> {
+    override fun getUserPoint(): Flow<Async<Point>> {
         return datastore.data.map {
             val latitude = it[LATITUDE]
             val longitude = it[LONGITUDE]

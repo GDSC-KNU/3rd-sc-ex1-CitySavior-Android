@@ -11,6 +11,7 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.stateIn
+import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
@@ -19,20 +20,22 @@ class MainActivityViewModel @Inject constructor(
     private val authRepository: AuthRepository,
 ) : ViewModel() {
     val uiState: StateFlow<MainActivityUiState> = flow {
-        authRepository.getAfterOnBoarding()
-            .onSuccess {
-                if (it.not()) {
-                    emit(MainActivityUiState.Initial)
-                    return@flow
-                }
-            }
-
         jwtTokenRepository.getJwtToken()
-            .collect{
+            .collect {
+                Timber.d("collect: $it")
                 it.onSuccess {
                     emit(MainActivityUiState.AfterLogin)
                 }.onError {
-                    emit(MainActivityUiState.BeforeLogin)
+                    Timber.d("collect Error!: $it")
+                    authRepository.getAfterOnBoarding().onSuccess {
+                        if(it){
+                            emit(MainActivityUiState.BeforeLogin)
+                        }else{
+                            emit(MainActivityUiState.Initial)
+                        }
+                    }.onError {
+                        emit(MainActivityUiState.Initial)
+                    }
                 }
             }
     }.stateIn(viewModelScope, SharingStarted.Lazily, MainActivityUiState.Loading)
