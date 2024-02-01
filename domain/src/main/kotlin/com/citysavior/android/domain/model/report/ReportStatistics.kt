@@ -3,7 +3,7 @@ package com.citysavior.android.domain.model.report
 class ReportStatistics(
     val totalReports : Int,
     val resolvedReports : Int,
-    val statisticsDetailList : List<StatisticsDetail>,
+    val statisticsDetails : List<StatisticsDetail>,
 ){
     companion object{
         fun fixture(
@@ -14,7 +14,7 @@ class ReportStatistics(
             return ReportStatistics(
                 totalReports = totalReports,
                 resolvedReports = resolvedReports,
-                statisticsDetailList = statisticsDetailList,
+                statisticsDetails = statisticsDetailList,
             )
         }
     }

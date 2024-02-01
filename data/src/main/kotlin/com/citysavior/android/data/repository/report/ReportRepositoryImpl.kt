@@ -9,6 +9,7 @@ import com.citysavior.android.domain.model.report.Category
 import com.citysavior.android.domain.model.report.Point
 import com.citysavior.android.domain.model.report.ReportPoint
 import com.citysavior.android.domain.model.report.ReportPointDetail
+import com.citysavior.android.domain.model.report.ReportStatistics
 import com.citysavior.android.domain.repository.report.ReportRepository
 import kotlinx.coroutines.delay
 import okhttp3.MultipartBody
@@ -22,6 +23,14 @@ import kotlin.random.Random
 class ReportRepositoryImpl @Inject constructor(
     private val apiService: ApiService,
 ) : ReportRepository {
+    override suspend fun getReportStatistics(point: Point): Async<ReportStatistics> {
+        return Async.Success(ReportStatistics.fixture(totalReports = point.longitude.toInt()))
+//        return invokeApiAndConvertAsync(
+//            api = { apiService.getReportStatistics(35.89231, 128.61804) },
+//            convert = { it.toDomain() }
+//        )
+    }
+
     override suspend fun getReportList(
         latitude: Double,
         longitude: Double

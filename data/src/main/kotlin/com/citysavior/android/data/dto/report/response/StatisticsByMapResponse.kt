@@ -1,6 +1,7 @@
 package com.citysavior.android.data.dto.report.response
 
 import com.citysavior.android.domain.model.report.Category
+import com.citysavior.android.domain.model.report.ReportStatistics
 import com.citysavior.android.domain.model.report.StatisticsDetail
 
 data class StatisticsByMapResponse(
@@ -13,6 +14,12 @@ data class StatisticsDetailDto(
     val category : Category,
     val totalReports : Int,
     val resolvedReports : Int,
+)
+
+fun StatisticsByMapResponse.toDomain() = ReportStatistics(
+    totalReports = totalReports,
+    resolvedReports = resolvedReports,
+    statisticsDetails = statisticsDetails.map { it.toDomain() },
 )
 
 
