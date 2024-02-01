@@ -4,23 +4,20 @@ import java.time.LocalDate
 
 open class ReportPoint(
     val id: Long,
-    val latitude: Double,
-    val longitude: Double,
+    val point: Point,
     val category: Category,
     val weight: Int,
 ) {
     companion object {
         fun fixture(
             id: Long = 1L,
-            latitude: Double = 37.123456,
-            longitude: Double = 127.123456,
+            point: Point = Point.fixture(),
             category: Category = Category.OTHER,
             weight: Int = 1,
         ): ReportPoint {
             return ReportPoint(
                 id = id,
-                latitude = latitude,
-                longitude = longitude,
+                point = point,
                 category = category,
                 weight = weight,
             )
@@ -30,8 +27,7 @@ open class ReportPoint(
 
 class ReportPointDetail(
     id: Long,
-    latitude: Double,
-    longitude: Double,
+    point: Point,
     category: Category,
     weight: Int,
     val description: String,
@@ -41,15 +37,13 @@ class ReportPointDetail(
     val comments: List<Comment>,
 ) : ReportPoint(
     id = id,
-    latitude = latitude,
-    longitude = longitude,
+    point = point,
     category = category,
     weight = weight,
 ) {
     fun copy(
         id: Long = this.id,
-        latitude: Double = this.latitude,
-        longitude: Double = this.longitude,
+        point: Point = this.point,
         category: Category = this.category,
         weight: Int = this.weight,
         description: String = this.description,
@@ -60,8 +54,7 @@ class ReportPointDetail(
     ): ReportPointDetail {
         return ReportPointDetail(
             id = id,
-            latitude = latitude,
-            longitude = longitude,
+            point = point,
             category = category,
             weight = weight,
             description = description,
@@ -75,8 +68,7 @@ class ReportPointDetail(
     companion object {
         fun fixture(
             id: Long = 1L,
-            latitude: Double = 35.893314,
-            longitude: Double = 128.613390,
+            point: Point = Point.fixture(),
             category: Category = Category.OTHER,
             weight: Int = 1,
             description: String = "도로가 파여있어요.",
@@ -87,8 +79,7 @@ class ReportPointDetail(
         ): ReportPointDetail {
             return ReportPointDetail(
                 id = id,
-                latitude = latitude,
-                longitude = longitude,
+                point = point,
                 category = category,
                 weight = weight,
                 description = description,
