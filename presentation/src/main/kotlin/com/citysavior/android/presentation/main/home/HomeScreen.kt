@@ -20,6 +20,11 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.citysavior.android.domain.model.common.Async
+import com.citysavior.android.domain.model.report.ReportStatistics
+import com.citysavior.android.presentation.common.component.ErrorScreen
 import com.citysavior.android.presentation.common.constant.Sizes
 import com.citysavior.android.presentation.common.constant.TextStyles
 import com.citysavior.android.presentation.common.layout.DefaultLayout
@@ -29,85 +34,102 @@ import com.citysavior.android.presentation.main.home.component.DailyProgress
 
 
 @Composable
-fun HomeScreen() {
-    val items = List(3){}
+fun HomeScreen(
+    homeViewModel: HomeViewModel = hiltViewModel()
+) {
+    val uiState = homeViewModel.reportStatistics.collectAsStateWithLifecycle()
+    when(uiState.value){
+        is Async.Loading -> {
+            // TODO
+        }
+        is Async.Success -> {
+            val data = (uiState.value as Async.Success<ReportStatistics>).data
+            DefaultLayout(
+                title = "Home",
+                actions = {
+                    Icon(Icons.Filled.AccountCircle, contentDescription = "Account", tint = Color.Black)
+                }
+            ) {
 
-   DefaultLayout(
-       title = "Home",
-       actions = {
-           Icon(Icons.Filled.AccountCircle, contentDescription = "Account", tint = Color.Black)
-       }
-   ) {
+                Column(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(horizontal = 20.dp)
+                        .verticalScroll(rememberScrollState())
+                ) {
+                    Text(
+                        "Hello\nUser",
+                        style = TextStyles.TITLE_BIG.copy(
+                            lineHeight = 36.sp
+                        ),
+                    )
+                    Spacer(modifier = Modifier.height(20.dp))
+                    CustomChip(
+                        text = "Overview",
+                        textStyle = TextStyles.CONTENT_TEXT3_STYLE.copy(
+                            color = Color.White,
+                        ),
+                        size = DpSize(
+                            width = 120.dp,
+                            height = 32.dp,
+                        ),
+                    )
+                    Spacer(modifier = Modifier.height(14.dp))
+                    DailyProgress(
+                        title = "Daily progress",
+                        subTitle = "Here you can see your reported damages",
+                        progress = Pair(data.resolvedReports, data.totalReports),
+                    )
+                    Spacer(modifier = Modifier.height(20.dp))
+                    Text(
+                        "Categories",
+                        style = TextStyles.TITLE_LARGE2,
+                    )
+                    Spacer(modifier = Modifier.height(Sizes.INTERVAL2))
+                    for(i in 0 until (data.statisticsDetails.size/2)){
+                        val left = data.statisticsDetails[i]
+                        val right = data.statisticsDetails[i+1]
+                        Row{
+                            CategoryItem(
+                                modifier = Modifier.weight(1f),
+                                subTitle = "Sub Title",
+                                title = left.category.korean,
+                                progress = Pair(left.resolvedReports, left.totalReports),
+                            )
+                            Spacer(modifier = Modifier.width(Sizes.INTERVAL0))
+                            CategoryItem(
+                                modifier = Modifier.weight(1f),
+                                subTitle = "Sub Title",
+                                title = right.category.korean,
+                                progress = Pair(right.resolvedReports, right.totalReports),
+                            )
+                        }
+                        Spacer(modifier = Modifier.height(Sizes.INTERVAL0))
+                    }
+                    if(data.statisticsDetails.size%2 == 1){
+                        val last = data.statisticsDetails.last()
+                        Row {
+                            CategoryItem(
+                                modifier = Modifier.weight(1f),
+                                subTitle = "Sub Title",
+                                title = last.category.korean,
+                                progress = Pair(last.resolvedReports, last.totalReports),
+                            )
+                            Spacer(modifier = Modifier.width(Sizes.INTERVAL0))
+                            Spacer(modifier = Modifier.weight(1f))
+                        }
+                    }
 
-       Column(
-           modifier = Modifier
-               .fillMaxSize()
-               .padding(horizontal = 20.dp)
-               .verticalScroll(rememberScrollState())
-       ) {
-           Text(
-               "Hello\nUser",
-               style = TextStyles.TITLE_BIG.copy(
-                   lineHeight = 36.sp
-               ),
-           )
-           Spacer(modifier = Modifier.height(20.dp))
-           CustomChip(
-               text = "Overview",
-               textStyle = TextStyles.CONTENT_TEXT3_STYLE.copy(
-                   color = Color.White,
-               ),
-               size = DpSize(
-                   width = 120.dp,
-                   height = 32.dp,
-               ),
-           )
-          Spacer(modifier = Modifier.height(14.dp))
-           DailyProgress(
-               title = "Daily progress",
-               subTitle = "Here you can see your reported damages",
-               progress = Pair(76, 100),
-           )
-           Spacer(modifier = Modifier.height(20.dp))
-           Text(
-               "Categories",
-               style = TextStyles.TITLE_LARGE2,
-           )
-           Spacer(modifier = Modifier.height(Sizes.INTERVAL2))
-           for(i in 0 until (items.size/2)){
-               Row{
-                   CategoryItem(
-                       modifier = Modifier.weight(1f),
-                       subTitle = "Sub Title",
-                       title = "Title",
-                       progress = Pair(76, 100),
-                   )
-                   Spacer(modifier = Modifier.width(Sizes.INTERVAL0))
-                   CategoryItem(
-                       modifier = Modifier.weight(1f),
-                       subTitle = "Sub Title",
-                       title = "Title",
-                       progress = Pair(76, 100),
-                   )
-               }
-               Spacer(modifier = Modifier.height(Sizes.INTERVAL0))
-           }
-           if(items.size%2 == 1){
-               Row {
-                   CategoryItem(
-                          modifier = Modifier.weight(1f),
-                          subTitle = "Sub Title",
-                          title = "Title",
-                          progress = Pair(76, 100),
-                     )
-                   Spacer(modifier = Modifier.width(Sizes.INTERVAL0))
-                   Spacer(modifier = Modifier.weight(1f))
-               }
-           }
+                }
 
-       }
+            }
+        }
+        is Async.Error -> {
+            ErrorScreen(message = (uiState.value as Async.Error).exception.message ?: "Unknown Error")
+        }
+    }
 
-   }
+
 }
 
 
