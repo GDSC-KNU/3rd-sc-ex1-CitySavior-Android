@@ -61,7 +61,7 @@ dependencies {
 
     //permission
     implementation(libs.accompanist.permission)
-//    implementation(libs.map.location)
+    implementation(libs.map.location)
 }
 
 kapt {
