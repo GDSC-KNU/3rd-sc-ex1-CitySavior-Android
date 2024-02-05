@@ -24,6 +24,7 @@ class ReportRepositoryImpl @Inject constructor(
     private val apiService: ApiService,
 ) : ReportRepository {
     override suspend fun getReportStatistics(point: Point): Async<ReportStatistics> {
+        delay(400)
         return Async.Success(ReportStatistics.fixture(totalReports = point.longitude.toInt()))
 //        return invokeApiAndConvertAsync(
 //            api = { apiService.getReportStatistics(35.89231, 128.61804) },
