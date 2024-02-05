@@ -12,7 +12,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
@@ -58,7 +57,6 @@ const val INITIAL_ZOOM_LEVEL = 15f
 const val MARKER_ZOOM_LEVEL = 16f
 
 @SuppressLint("PermissionLaunchedDuringComposition")
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MapScreen(
     mapViewModel: MapViewModel = hiltViewModel(),
@@ -130,18 +128,20 @@ fun MapScreen(
 
 
     val scope = rememberCoroutineScope()
+    val deviceWidthPx = LocalView.current.resources.displayMetrics.widthPixels
     DisposableEffect(cameraPositionState.position.target) {
         val job = scope.launch {
             delay(400)
             val latLng = cameraPositionState.position.target
             val current = Point(latLng.latitude, latLng.longitude)
-            val distance = cameraPositionSavePoint.calculateDistance(current)
+
+            val distance = cameraPositionSavePoint.calculateDistance(current) //현재위치와 이전위치의 거리 계산
             val zoom = cameraPositionState.position.zoom
-            Timber.d("거리 계산 ! : $distance, | zoom: ${zoom}  distance*zoom : ${adjustDistanceBasedOnZoom(distance, zoom.toDouble())}")
-            if(distance < 0.001){
-                return@launch
-            }
-            if(adjustDistanceBasedOnZoom(distance, zoom.toDouble()) > 0.01){
+            val width = zoom.toZoomToMetersPerPixel() * deviceWidthPx/4
+            Timber.d("거리 계산 ! : $distance meter, | zoom: $zoom  px?meter: ${zoom.toZoomToMetersPerPixel()} ")
+            Timber.d("deviceWidthPx : $deviceWidthPx, meter*px : ${width}")
+
+            if(distance > width/1.5){//화면을 벗어나면 다시 요청
                 mapViewModel.getReports(current.latitude, current.longitude)
                 cameraPositionSavePoint = current
             }
@@ -347,9 +347,7 @@ private fun getCurrentLocation(context: Context, callback: (Double, Double) -> U
             exception.printStackTrace()
         }
 }
-fun adjustDistanceBasedOnZoom(originalDistance: Double, zoom: Double): Double {
-    // 사용자가 확대하면 거리를 늘어나게, 축소하면 거리를 줄어들게 조절
-    // 여기서는 간단한 비례식을 사용함. 원하는 방식으로 수정 가능
-    val adjustedDistance = originalDistance * Math.pow(2.0, zoom - 15.0)
-    return adjustedDistance
+
+fun Float.toZoomToMetersPerPixel(): Double {
+    return 156543.03392 * Math.cos(this * Math.PI / 180) / Math.pow(2.0, this.toDouble())
 }
