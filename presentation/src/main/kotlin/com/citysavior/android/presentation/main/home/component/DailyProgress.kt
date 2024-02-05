@@ -15,6 +15,7 @@ import androidx.compose.ui.unit.dp
 import com.citysavior.android.presentation.common.constant.Colors
 import com.citysavior.android.presentation.common.constant.Sizes
 import com.citysavior.android.presentation.common.constant.TextStyles
+import com.citysavior.android.presentation.common.utils.shimmerLoadingAnimation
 
 @Composable
 fun DailyProgress(
@@ -56,6 +57,19 @@ fun DailyProgress(
         )
 
     }
+}
+
+@Composable
+fun DailyProgressLoading(){
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(Sizes.DAILY_PROGRESS_HEIGHT)
+            .background(
+                Colors.WIDGET_BG_GREY,
+                shape = RoundedCornerShape(size = Sizes.WIDGET_ROUND)
+            ).shimmerLoadingAnimation(),
+    ){}
 }
 
 @Composable
