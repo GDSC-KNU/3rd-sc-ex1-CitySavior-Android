@@ -24,7 +24,7 @@ Consists of api, dto, and repositoryImpl.
 ### Domain
 Comprises model, repository, and params.
 - Uses params when repository function arguments become extensive and includes convenience methods for optimistic responses.
-- Usecase is not employed except for authentication due to the absence of complex business logic in the app.
+- Usecase is not employed due to the absence of complex business logic in the app.
 - Fixture methods are created for the model.
 - Utilizes the Async class as a wrapping class for API responses.
 
