@@ -58,27 +58,32 @@ object TextStyles {
         fontSize = 18.sp,
         fontWeight = REGULAR,
         fontFamily = ROBOTO,
+        color = Colors.BLACK
     )
 
     val CONTENT_TEXT2_STYLE = TextStyle(
         fontSize = 16.sp,
         fontWeight = REGULAR,
         fontFamily = ROBOTO,
+        color = Colors.BLACK
     )
     val CONTENT_TEXT3_STYLE = TextStyle(
         fontSize = 14.sp,
         fontWeight = REGULAR,
         fontFamily = ROBOTO,
+        color = Colors.BLACK
     )
     val CONTENT_SMALL1_STYLE = TextStyle(
         fontSize = 12.sp,
         fontWeight = REGULAR,
         fontFamily = ROBOTO,
+        color = Colors.BLACK
     )
 
     val CONTENT_SMALL2_STYLE = TextStyle(
         fontSize = 10.sp,
         fontWeight = REGULAR,
         fontFamily = ROBOTO,
+        color = Colors.BLACK
     )
 }

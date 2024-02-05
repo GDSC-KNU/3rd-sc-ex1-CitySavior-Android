@@ -1,6 +1,7 @@
 package com.citysavior.android.data.dto.report.response
 
 import com.citysavior.android.domain.model.report.Category
+import com.citysavior.android.domain.model.report.Point
 import com.citysavior.android.domain.model.report.ReportPoint
 
 data class ReportsByMapResponse(
@@ -18,8 +19,10 @@ data class ReportPointDto(
 
 fun ReportPointDto.toDomain() = ReportPoint(
     id = id,
-    latitude = latitude,
-    longitude = longitude,
+    point = Point(
+        latitude = latitude,
+        longitude = longitude,
+    ),
     category = category,
     weight = weight,
 )

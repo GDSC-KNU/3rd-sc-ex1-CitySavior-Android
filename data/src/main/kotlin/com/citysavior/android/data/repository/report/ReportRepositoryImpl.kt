@@ -6,8 +6,10 @@ import com.citysavior.android.data.dto.report.response.toDomain
 import com.citysavior.android.data.utils.invokeApiAndConvertAsync
 import com.citysavior.android.domain.model.common.Async
 import com.citysavior.android.domain.model.report.Category
+import com.citysavior.android.domain.model.report.Point
 import com.citysavior.android.domain.model.report.ReportPoint
 import com.citysavior.android.domain.model.report.ReportPointDetail
+import com.citysavior.android.domain.model.report.ReportStatistics
 import com.citysavior.android.domain.repository.report.ReportRepository
 import kotlinx.coroutines.delay
 import okhttp3.MultipartBody
@@ -21,19 +23,29 @@ import kotlin.random.Random
 class ReportRepositoryImpl @Inject constructor(
     private val apiService: ApiService,
 ) : ReportRepository {
+    override suspend fun getReportStatistics(point: Point): Async<ReportStatistics> {
+        delay(400)
+        return Async.Success(ReportStatistics.fixture(totalReports = point.longitude.toInt()))
+//        return invokeApiAndConvertAsync(
+//            api = { apiService.getReportStatistics(35.89231, 128.61804) },
+//            convert = { it.toDomain() }
+//        )
+    }
+
     override suspend fun getReportList(
         latitude: Double,
         longitude: Double
     ): Async<List<ReportPoint>> {
         return Async.Success(listOf(
-            ReportPoint.fixture(id=1,latitude = 35.895401, longitude = 128.612033),
-            ReportPoint.fixture(id = 2,latitude = 35.89231, longitude = 128.61804),
-            ReportPoint.fixture(id=3,latitude = 35.89431, longitude = 128.61404),
-            ReportPoint.fixture(id=4,latitude = 35.89631, longitude = 128.61204),
-            ReportPoint.fixture(id=5,latitude = 35.895401, longitude = 128.612033),
-            ReportPoint.fixture(id=6,latitude = 35.90231, longitude = 128.61804),
-            ReportPoint.fixture(id=7,latitude = 35.90431, longitude = 128.61404),
-            ReportPoint.fixture(id=8, latitude = 35.90631, longitude = 128.61204),
+
+            ReportPoint.fixture(id=1, point = Point.fixture(35.89231, 128.61804)),
+            ReportPoint.fixture(id = 2, point = Point.fixture(latitude = 35.89231, longitude = 128.61804)),
+            ReportPoint.fixture(id=3,point = Point.fixture(latitude = 35.89431, longitude = 128.61404)),
+            ReportPoint.fixture(id=4,point = Point.fixture(latitude = 35.89631, longitude = 128.61204)),
+            ReportPoint.fixture(id=5,point = Point.fixture(latitude = 35.895401, longitude = 128.612033)),
+            ReportPoint.fixture(id=6,point = Point.fixture(latitude = 35.90231, longitude = 128.61804)),
+            ReportPoint.fixture(id=7,point = Point.fixture(latitude = 35.90431, longitude = 128.61404)),
+            ReportPoint.fixture(id=8,point = Point.fixture( latitude = 35.90631, longitude = 128.61204)),
         ))
 //        return invokeApiAndConvertAsync(
 //            api = { apiService.getReportInfo(latitude, longitude) },
@@ -45,8 +57,7 @@ class ReportRepositoryImpl @Inject constructor(
         delay(400)
         return Async.Success(ReportPointDetail.fixture(
             id = reportPoint.id,
-            latitude = reportPoint.latitude,
-            longitude = reportPoint.longitude,
+            point = reportPoint.point,
             category = reportPoint.category,
         ))
         return invokeApiAndConvertAsync(

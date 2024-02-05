@@ -15,6 +15,8 @@ import androidx.compose.ui.unit.dp
 import com.citysavior.android.presentation.common.constant.Colors
 import com.citysavior.android.presentation.common.constant.Sizes
 import com.citysavior.android.presentation.common.constant.TextStyles
+import com.citysavior.android.presentation.common.utils.shimmerLoadingAnimation
+import kotlin.math.roundToInt
 
 @Composable
 fun DailyProgress(
@@ -44,7 +46,7 @@ fun DailyProgress(
         )
         Spacer(modifier = Modifier.weight(1f))
         Text(
-            text = "${(progress.first).toFloat()/(progress.second).toFloat()*100}%",
+            text = "${((progress.first).toFloat()/(progress.second).toFloat()*10000).roundToInt()/100.0}%",
             style = TextStyles.TITLE_MEDIUM2,
         )
         Spacer(modifier = Modifier.height(Sizes.INTERVAL3))
@@ -59,11 +61,24 @@ fun DailyProgress(
 }
 
 @Composable
+fun DailyProgressLoading(){
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(Sizes.DAILY_PROGRESS_HEIGHT)
+            .background(
+                Colors.WIDGET_BG_GREY,
+                shape = RoundedCornerShape(size = Sizes.WIDGET_ROUND)
+            ).shimmerLoadingAnimation(),
+    ){}
+}
+
+@Composable
 @Preview
 fun DailyProgressPreview(){
     DailyProgress(
         title = "Damages",
         subTitle = "5 New",
-        progress = Pair(9,24),
+        progress = Pair(7,24),
     )
 }

@@ -42,10 +42,14 @@ class AuthRepositoryImpl @Inject constructor(
     }
 
     override suspend fun getAfterOnBoarding(): Async<Boolean> {
-        val resp =  dataStore.data.map {
-            it[AFTER_ONBOARDING]
-        }.first()
-        return Async.Success(resp ?: false)
+        return try{
+            val resp =  dataStore.data.map {
+                it[AFTER_ONBOARDING]
+            }.first()
+            Async.Success(resp ?: false)
+        }catch (e: Exception){
+            Async.Error(e)
+        }
     }
 
     override suspend fun setAfterOnBoarding(): Async<Unit> {

@@ -23,8 +23,7 @@ fun ReportDetailResponse.toDomain(
     reportPoint: ReportPoint,
 ) = ReportPointDetail(
     id = reportPoint.id,
-    latitude = reportPoint.latitude,
-    longitude = reportPoint.longitude,
+    point = reportPoint.point,
     category = reportPoint.category,
     weight = reportPoint.weight,
     description = description,

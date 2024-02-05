@@ -143,8 +143,8 @@ fun MapScreen(
                     val reports = (reportPoints.value as Async.Success).data
                     reports.forEach {
                         ReportMarker(
-                            latitude = it.latitude,
-                            longitude = it.longitude,
+                            latitude = it.point.latitude,
+                            longitude = it.point.longitude,
                             markerBitmap = null,
                             onClick = {
                                 selectedReportId = it.id
@@ -156,7 +156,7 @@ fun MapScreen(
                                     cameraPositionState.position.zoom
 
                                 val cameraUpdate = CameraUpdateFactory.newLatLngZoom(
-                                    LatLng(it.latitude, it.longitude),
+                                    LatLng(it.point.latitude, it.point.longitude),
                                     zoom
                                 )
                                 scope.launch {
