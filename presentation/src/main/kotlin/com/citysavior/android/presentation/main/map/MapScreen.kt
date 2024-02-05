@@ -1,5 +1,11 @@
 package com.citysavior.android.presentation.main.map
 
+import android.Manifest
+import android.annotation.SuppressLint
+import android.content.Context
+import android.content.pm.PackageManager
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -41,6 +47,7 @@ import androidx.compose.material3.SheetValue
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -61,16 +68,20 @@ import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import androidx.compose.ui.window.DialogWindowProvider
 import androidx.compose.ui.window.SecureFlagPolicy
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
 import com.citysavior.android.domain.model.common.Async
+import com.citysavior.android.domain.model.report.Point
 import com.citysavior.android.domain.model.report.ReportPointDetail
 import com.citysavior.android.presentation.common.component.CustomTextEditField
 import com.citysavior.android.presentation.common.constant.Colors
 import com.citysavior.android.presentation.common.constant.Sizes
 import com.citysavior.android.presentation.common.constant.TextStyles
 import com.citysavior.android.presentation.main.map.component.ReportMarker
+import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
@@ -78,30 +89,78 @@ import com.google.maps.android.compose.GoogleMap
 import com.google.maps.android.compose.MapProperties
 import com.google.maps.android.compose.MapUiSettings
 import com.google.maps.android.compose.rememberCameraPositionState
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
 const val INITIAL_ZOOM_LEVEL = 15f
 const val MARKER_ZOOM_LEVEL = 16f
 
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
+@SuppressLint("PermissionLaunchedDuringComposition")
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MapScreen(
     mapViewModel: MapViewModel = hiltViewModel(),
 ) {
+    var cameraPositionSavePoint by remember {
+        mutableStateOf(Point.fixture())
+    }
     LaunchedEffect(Unit) {
-        mapViewModel.getReports(35.890401, 128.612033)
+        val flow = mapViewModel.getUserPoint()
+        flow.collect { point ->
+            when (point) {
+                is Async.Loading -> {
+                    Timber.d("loading")
+                }
+                is Async.Error -> {
+                    val p = Point.fixture()
+                    cameraPositionSavePoint = p
+                    Timber.d("lat : ${p.latitude}, long : ${p.longitude}")
+                    mapViewModel.getReports(p.latitude, p.longitude)
+                    return@collect
+                }
+                is Async.Success -> {
+                    val p = point.data
+                    cameraPositionSavePoint = p
+                    Timber.d("lat : ${p.latitude}, long : ${p.longitude}")
+                    mapViewModel.getReports(p.latitude, p.longitude)
+                    return@collect
+                }
+            }
+        }
     }
     val context = LocalContext.current
-    val knu = LatLng(35.890401, 128.612033)
+    var isPermissionGranted by remember { mutableStateOf(hasLocationPermission(context)) }
     val cameraPositionState = rememberCameraPositionState {
-        position = CameraPosition.fromLatLngZoom(knu, INITIAL_ZOOM_LEVEL)
+        position = CameraPosition.fromLatLngZoom(LatLng(cameraPositionSavePoint.latitude,cameraPositionSavePoint.longitude), INITIAL_ZOOM_LEVEL)
     }
-    val uiSettings = remember { MapUiSettings(mapToolbarEnabled = false, zoomControlsEnabled = false) }
-    val properties = remember {
-        MapProperties(
-            isMyLocationEnabled = false, minZoomPreference = 8f, maxZoomPreference = 20f
-        )
+    val uiSettings = MapUiSettings(mapToolbarEnabled = false, zoomControlsEnabled = false, myLocationButtonEnabled = true)
+    // Create a permission launcher
+    val requestPermissionLauncher =
+        rememberLauncherForActivityResult(
+            contract = ActivityResultContracts.RequestPermission(),
+            onResult = { isGranted: Boolean ->
+                if (isGranted) {
+                    // Permission granted, update the location
+                    getCurrentLocation(context) { lat, long ->
+                        Timber.d("lat : $lat, long : $long")
+                    }
+                    isPermissionGranted = true
+                }
+            })
+    LaunchedEffect(isPermissionGranted) {
+        isPermissionGranted = hasLocationPermission(context)
+        Timber.d("위치 권한 isGranted : $isPermissionGranted")
+        if (isPermissionGranted) {
+            // Permission already granted, update the location
+            getCurrentLocation(context) { lat, long ->
+                Timber.d("위치정보 !!!!! lat : $lat, long : $long")
+                mapViewModel.saveUserPoint(lat, long)
+            }
+        } else {
+            // Request location permission
+            requestPermissionLauncher.launch(Manifest.permission.ACCESS_FINE_LOCATION)
+        }
     }
 
     Timber.d("zoom : ${cameraPositionState.position.zoom}, position : ${cameraPositionState.position}")
@@ -109,20 +168,28 @@ fun MapScreen(
     val reportPoints = mapViewModel.reports.collectAsStateWithLifecycle()
 
 
-    /**
-     * Calculate marker Size by throttle 400ms
-     */
-//    val composeCorutineScope = rememberCoroutineScope()
-//    DisposableEffect(cameraPositionState.position.zoom) {
-//        val job = composeCorutineScope.launch {
-//            delay(400)
-//            dstSize = calculateWeight(cameraPositionState.position.zoom)
-//        }
-//        onDispose {
-//            job.cancel()
-//        }
-//    }
     val scope = rememberCoroutineScope()
+    DisposableEffect(cameraPositionState.position.target) {
+        val job = scope.launch {
+            delay(400)
+            val latLng = cameraPositionState.position.target
+            val current = Point(latLng.latitude, latLng.longitude)
+            val distance = cameraPositionSavePoint.calculateDistance(current)
+            val zoom = cameraPositionState.position.zoom
+            Timber.d("거리 계산 ! : $distance, | zoom: ${zoom}  distance*zoom : ${adjustDistanceBasedOnZoom(distance, zoom.toDouble())}")
+            if(distance < 0.001){
+                return@launch
+            }
+            if(adjustDistanceBasedOnZoom(distance, zoom.toDouble()) > 0.01){
+                mapViewModel.getReports(current.latitude, current.longitude)
+                cameraPositionSavePoint = current
+            }
+
+        }
+        onDispose {
+            job.cancel()
+        }
+    }
 
     var showDialog by remember { mutableStateOf(false) }
     var createNewReport by rememberSaveable { mutableStateOf(false) }
@@ -130,44 +197,90 @@ fun MapScreen(
     Box(
         modifier = Modifier.fillMaxSize(),
     ) {
-        GoogleMap(
-            modifier = Modifier.fillMaxSize(),
-            cameraPositionState = cameraPositionState,
-            uiSettings = uiSettings,
-            properties = properties,
-        ) {
-            when (reportPoints.value) {
-                is Async.Loading -> { Timber.d("loading") }
-                is Async.Error -> { Timber.d("error") }
-                is Async.Success -> {
-                    val reports = (reportPoints.value as Async.Success).data
-                    reports.forEach {
-                        ReportMarker(
-                            latitude = it.point.latitude,
-                            longitude = it.point.longitude,
-                            markerBitmap = null,
-                            onClick = {
-                                selectedReportId = it.id
-                                mapViewModel.getDetailReport(it.id)
-                                showDialog = true
-                                val zoom = if(cameraPositionState.position.zoom < MARKER_ZOOM_LEVEL)
-                                    MARKER_ZOOM_LEVEL
-                                else
-                                    cameraPositionState.position.zoom
+        if(isPermissionGranted){
+            GoogleMap(
+                modifier = Modifier.fillMaxSize(),
+                cameraPositionState = cameraPositionState,
+                uiSettings = uiSettings,
+                properties = MapProperties(
+                    isMyLocationEnabled = true, minZoomPreference = 8f, maxZoomPreference = 20f,
+                ),
+            ) {
+                when (reportPoints.value) {
+                    is Async.Loading -> { Timber.d("loading") }
+                    is Async.Error -> { Timber.d("error") }
+                    is Async.Success -> {
+                        val reports = (reportPoints.value as Async.Success).data
+                        reports.forEach {
+                            ReportMarker(
+                                latitude = it.point.latitude,
+                                longitude = it.point.longitude,
+                                markerBitmap = null,
+                                onClick = {
+                                    selectedReportId = it.id
+                                    mapViewModel.getDetailReport(it.id)
+                                    showDialog = true
+                                    val zoom = if(cameraPositionState.position.zoom < MARKER_ZOOM_LEVEL)
+                                        MARKER_ZOOM_LEVEL
+                                    else
+                                        cameraPositionState.position.zoom
 
-                                val cameraUpdate = CameraUpdateFactory.newLatLngZoom(
-                                    LatLng(it.point.latitude, it.point.longitude),
-                                    zoom
-                                )
-                                scope.launch {
-                                    cameraPositionState.animate(cameraUpdate, 300)
+                                    val cameraUpdate = CameraUpdateFactory.newLatLngZoom(
+                                        LatLng(it.point.latitude, it.point.longitude),
+                                        zoom
+                                    )
+                                    scope.launch {
+                                        cameraPositionState.animate(cameraUpdate, 300)
+                                    }
                                 }
-                            }
-                        )
+                            )
+                        }
+                    }
+                }
+            }
+        }else{
+            GoogleMap(
+                modifier = Modifier.fillMaxSize(),
+                cameraPositionState = cameraPositionState,
+                uiSettings = uiSettings,
+                properties = MapProperties(
+                    isMyLocationEnabled = false, minZoomPreference = 8f, maxZoomPreference = 20f,
+                ),
+            ) {
+                when (reportPoints.value) {
+                    is Async.Loading -> { Timber.d("loading") }
+                    is Async.Error -> { Timber.d("error") }
+                    is Async.Success -> {
+                        val reports = (reportPoints.value as Async.Success).data
+                        reports.forEach {
+                            ReportMarker(
+                                latitude = it.point.latitude,
+                                longitude = it.point.longitude,
+                                markerBitmap = null,
+                                onClick = {
+                                    selectedReportId = it.id
+                                    mapViewModel.getDetailReport(it.id)
+                                    showDialog = true
+                                    val zoom = if(cameraPositionState.position.zoom < MARKER_ZOOM_LEVEL)
+                                        MARKER_ZOOM_LEVEL
+                                    else
+                                        cameraPositionState.position.zoom
+
+                                    val cameraUpdate = CameraUpdateFactory.newLatLngZoom(
+                                        LatLng(it.point.latitude, it.point.longitude),
+                                        zoom
+                                    )
+                                    scope.launch {
+                                        cameraPositionState.animate(cameraUpdate, 300)
+                                    }
+                                }
+                            )
+                        }
                     }
                 }
             }
         }
+
         FloatingActionButton(
             modifier = Modifier
                 .align(Alignment.BottomEnd)
@@ -487,4 +600,51 @@ private fun calculateWeight(zoom: Float): Int {
     }
     Timber.d("계산결과 : $weight")
     return (weight * 96).toInt()
+}
+
+
+private fun hasLocationPermission(context: Context): Boolean {
+    return ContextCompat.checkSelfPermission(
+        context,
+        android.Manifest.permission.ACCESS_FINE_LOCATION
+    ) == PackageManager.PERMISSION_GRANTED
+}
+
+private fun getCurrentLocation(context: Context, callback: (Double, Double) -> Unit) {
+    val fusedLocationClient = LocationServices.getFusedLocationProviderClient(context)
+    if (ActivityCompat.checkSelfPermission(
+            context,
+            Manifest.permission.ACCESS_FINE_LOCATION
+        ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
+            context,
+            Manifest.permission.ACCESS_COARSE_LOCATION
+        ) != PackageManager.PERMISSION_GRANTED
+    ) {
+        // TODO: Consider calling
+        //    ActivityCompat#requestPermissions
+        // here to request the missing permissions, and then overriding
+        //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+        //                                          int[] grantResults)
+        // to handle the case where the user grants the permission. See the documentation
+        // for ActivityCompat#requestPermissions for more details.
+        return
+    }
+    fusedLocationClient.lastLocation
+        .addOnSuccessListener { location ->
+            if (location != null) {
+                val lat = location.latitude
+                val long = location.longitude
+                callback(lat, long)
+            }
+        }
+        .addOnFailureListener { exception ->
+            // Handle location retrieval failure
+            exception.printStackTrace()
+        }
+}
+fun adjustDistanceBasedOnZoom(originalDistance: Double, zoom: Double): Double {
+    // 사용자가 확대하면 거리를 늘어나게, 축소하면 거리를 줄어들게 조절
+    // 여기서는 간단한 비례식을 사용함. 원하는 방식으로 수정 가능
+    val adjustedDistance = originalDistance * Math.pow(2.0, zoom - 15.0)
+    return adjustedDistance
 }

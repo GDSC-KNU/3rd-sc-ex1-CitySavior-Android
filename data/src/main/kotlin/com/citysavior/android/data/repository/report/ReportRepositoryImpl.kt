@@ -36,16 +36,16 @@ class ReportRepositoryImpl @Inject constructor(
         latitude: Double,
         longitude: Double
     ): Async<List<ReportPoint>> {
+        val rand = Random.nextLong()
         return Async.Success(listOf(
-
-            ReportPoint.fixture(id=1, point = Point.fixture(35.89231, 128.61804)),
-            ReportPoint.fixture(id = 2, point = Point.fixture(latitude = 35.89231, longitude = 128.61804)),
-            ReportPoint.fixture(id=3,point = Point.fixture(latitude = 35.89431, longitude = 128.61404)),
-            ReportPoint.fixture(id=4,point = Point.fixture(latitude = 35.89631, longitude = 128.61204)),
-            ReportPoint.fixture(id=5,point = Point.fixture(latitude = 35.895401, longitude = 128.612033)),
-            ReportPoint.fixture(id=6,point = Point.fixture(latitude = 35.90231, longitude = 128.61804)),
-            ReportPoint.fixture(id=7,point = Point.fixture(latitude = 35.90431, longitude = 128.61404)),
-            ReportPoint.fixture(id=8,point = Point.fixture( latitude = 35.90631, longitude = 128.61204)),
+            ReportPoint.fixture(id=rand + 1, point = Point.fixture(latitude + 0.001, longitude + 0.001)),
+            ReportPoint.fixture(id=rand + 2,point = Point.fixture(latitude - 0.002, longitude + 0.002)),
+            ReportPoint.fixture(id=rand + 3,point = Point.fixture(latitude + 0.003, longitude - 0.003)),
+            ReportPoint.fixture(id=rand + 4,point = Point.fixture(latitude + 0.004, longitude + 0.004)),
+            ReportPoint.fixture(id=rand + 5,point = Point.fixture(latitude - 0.005, longitude + 0.005)),
+            ReportPoint.fixture(id=rand + 6,point = Point.fixture(latitude + 0.006, longitude - 0.006)),
+            ReportPoint.fixture(id=rand + 7,point = Point.fixture(latitude + 0.007, longitude + 0.007)),
+            ReportPoint.fixture(id=rand + 8,point = Point.fixture(latitude + 0.008, longitude - 0.008)),
         ))
 //        return invokeApiAndConvertAsync(
 //            api = { apiService.getReportInfo(latitude, longitude) },
