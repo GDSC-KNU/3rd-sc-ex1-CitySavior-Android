@@ -12,6 +12,7 @@ import com.citysavior.android.domain.model.common.toAsync
 import com.citysavior.android.domain.model.report.Point
 import com.citysavior.android.domain.model.user.UserInfo
 import com.citysavior.android.domain.repository.user.UserRepository
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
@@ -23,6 +24,8 @@ class UserRepositoryImpl @Inject constructor(
     private val datastore : DataStore<Preferences>
 ) : UserRepository {
     override suspend fun getUserInfo(): Async<UserInfo> {
+        delay(400)
+        return Async.Success(UserInfo.fixture())
         return invokeApiAndConvertAsync(
             api = { apiService.getUserInfo() },
             convert = { it.toDomain() }
