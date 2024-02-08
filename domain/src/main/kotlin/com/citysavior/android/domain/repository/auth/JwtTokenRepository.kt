@@ -9,5 +9,6 @@ interface JwtTokenRepository {
     suspend fun saveAccessToken(accessToken: String): Async<Unit>
     suspend fun saveRefreshToken(refreshToken: String): Async<Unit>
     fun getJwtToken(): Flow<Async<JwtToken>>
+    suspend fun findJwtToken() : JwtToken?
     suspend fun deleteJwtToken(): Async<Unit>
 }
