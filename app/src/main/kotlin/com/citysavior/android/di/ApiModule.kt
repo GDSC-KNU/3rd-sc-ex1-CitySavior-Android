@@ -4,6 +4,7 @@ import com.citysavior.android.data.api.ApiConstants.BASE_URL
 import com.citysavior.android.data.api.ApiService
 import com.citysavior.android.data.api.AuthInterceptor
 import com.citysavior.android.data.api.HeaderInterceptor
+import com.citysavior.android.domain.repository.auth.JwtTokenRepository
 import com.google.gson.GsonBuilder
 import com.google.gson.JsonDeserializer
 import com.google.gson.JsonSerializer
@@ -27,14 +28,14 @@ object ApiModule {
 
     @Singleton
     @Provides
-    fun provideHeaderInterceptor(): HeaderInterceptor {
-        return HeaderInterceptor()
+    fun provideHeaderInterceptor(jwtTokenRepository: JwtTokenRepository): HeaderInterceptor {
+        return HeaderInterceptor(jwtTokenRepository)
     }
 
     @Singleton
     @Provides
-    fun provideAuthInterceptor(): Authenticator {
-        return AuthInterceptor()
+    fun provideAuthInterceptor(jwtTokenRepository: JwtTokenRepository): Authenticator {
+        return AuthInterceptor(jwtTokenRepository)
     }
 
     @Singleton
