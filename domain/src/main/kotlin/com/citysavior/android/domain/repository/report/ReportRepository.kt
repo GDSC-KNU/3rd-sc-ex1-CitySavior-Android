@@ -27,4 +27,5 @@ interface ReportRepository {
     ): Async<Long>
     suspend fun createReportComment(reportPointId : Long, content : String) : Async<Long>
 
+    suspend fun endReport(reportPointId: Long): Async<Unit>
 }

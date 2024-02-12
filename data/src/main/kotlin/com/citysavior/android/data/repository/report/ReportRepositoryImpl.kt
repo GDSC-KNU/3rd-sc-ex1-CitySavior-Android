@@ -93,5 +93,12 @@ class ReportRepositoryImpl @Inject constructor(
         )
     }
 
+    override suspend fun endReport(reportPointId: Long): Async<Unit> {
+        return invokeApiAndConvertAsync(
+            api = { apiService.endReport(reportPointId) },
+            convert = { it }
+        )
+    }
+
 
 }
