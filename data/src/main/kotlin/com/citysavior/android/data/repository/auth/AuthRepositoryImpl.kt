@@ -8,8 +8,10 @@ import androidx.datastore.preferences.core.stringPreferencesKey
 import com.citysavior.android.data.api.ApiService
 import com.citysavior.android.data.dto.auth.request.LoginRequestV1
 import com.citysavior.android.data.dto.auth.request.SignupRequestV1
+import com.citysavior.android.data.utils.invokeApiAndConvertAsync
 import com.citysavior.android.domain.model.auth.JwtToken
 import com.citysavior.android.domain.model.common.Async
+import com.citysavior.android.domain.model.user.UserRole
 import com.citysavior.android.domain.repository.auth.AuthRepository
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
@@ -62,6 +64,21 @@ class AuthRepositoryImpl @Inject constructor(
         }
         return Async.Success(Unit)
     }
+
+    override suspend fun getUserRole(): Async<UserRole> {
+        return invokeApiAndConvertAsync(
+            api = { apiService.getUserRole() },
+            convert = { it }
+        )
+    }
+
+    override suspend fun changeUserRole(): Async<Unit> {
+        return invokeApiAndConvertAsync(
+            api = { apiService.changeUserRole() },
+            convert = {  }
+        )
+    }
+
 
     /**
      * UUID를 가져오거나 없으면 생성해서 저장하고 가져온다.
