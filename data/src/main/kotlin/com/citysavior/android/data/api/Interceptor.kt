@@ -44,7 +44,7 @@ class AuthInterceptor @Inject constructor(
 
             // 토큰 재발급
             val refreshRequest = Request.Builder()
-                .url("$BASE_URL/auth/refreshToken")
+                .url("$BASE_URL/auth/token/refresh")
                 .post("".toRequestBody())
                 .addHeader("authorization", "Bearer ${jwt!!.refreshToken}")
                 .build()
