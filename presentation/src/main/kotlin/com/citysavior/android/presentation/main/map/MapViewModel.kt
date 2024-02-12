@@ -32,9 +32,10 @@ class MapViewModel @Inject constructor(
     fun getReports(
         latitude: Double,
         longitude: Double,
+        radius: Int = 1000,
     ){
         viewModelScope.launch {
-            val resp = reportRepository.getReportList(latitude, longitude)
+            val resp = reportRepository.getReportList(latitude, longitude, radius)
             resp.onSuccess {
                 if(_reports.value is Async.Loading){
                     _reports.value = Async.Success(it)

@@ -56,6 +56,7 @@ interface ApiService {
     suspend fun getReportStatistics(
         @Query("latitude") latitude: Double,
         @Query("longitude") longitude: Double,
+        @Query("radius") radius: Int,
     ) : Response<StatisticsByMapResponse>
 
     @GET("/v1/reports")

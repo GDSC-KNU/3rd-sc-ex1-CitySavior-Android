@@ -34,7 +34,8 @@ class ReportRepositoryImpl @Inject constructor(
 
     override suspend fun getReportList(
         latitude: Double,
-        longitude: Double
+        longitude: Double,
+        radius: Int,
     ): Async<List<ReportPoint>> {
         val rand = Random.nextLong()
         return Async.Success(listOf(
