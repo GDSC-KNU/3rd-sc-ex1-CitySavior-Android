@@ -8,6 +8,7 @@ import androidx.datastore.preferences.core.stringPreferencesKey
 import com.citysavior.android.data.api.ApiClient
 import com.citysavior.android.data.dto.auth.request.LoginRequestV1
 import com.citysavior.android.data.dto.auth.request.SignupRequestV1
+import com.citysavior.android.data.dto.auth.response.toDomain
 import com.citysavior.android.data.utils.invokeApiAndConvertAsync
 import com.citysavior.android.domain.model.auth.JwtToken
 import com.citysavior.android.domain.model.common.Async
@@ -26,21 +27,19 @@ class AuthRepositoryImpl @Inject constructor(
     override suspend fun login(): Async<JwtToken> {
         val uuid = getUUID()
         val request = LoginRequestV1(uuid = uuid)
-        return Async.Success(JwtToken.fixture())
-//        return invokeApiAndConvertAsync(
-//            api = { apiService.login(request) },
-//            convert = { it.toDomain() }
-//        )
+        return invokeApiAndConvertAsync(
+            api = { apiClient.login(request) },
+            convert = { it.toDomain() }
+        )
     }
 
     override suspend fun signUp(): Async<JwtToken> {
         val uuid = getUUID()
         val request = SignupRequestV1(uuid = uuid)
-        return Async.Success(JwtToken.fixture())
-//        return invokeApiAndConvertAsync(
-//            api = { apiService.signup(request) },
-//            convert = { it.toDomain() }
-//        )
+        return invokeApiAndConvertAsync(
+            api = { apiClient.signup(request) },
+            convert = { it.toDomain() }
+        )
     }
 
     override suspend fun getAfterOnBoarding(): Async<Boolean> {
