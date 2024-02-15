@@ -5,7 +5,7 @@ import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
-import com.citysavior.android.data.api.ApiService
+import com.citysavior.android.data.api.ApiClient
 import com.citysavior.android.data.dto.auth.request.LoginRequestV1
 import com.citysavior.android.data.dto.auth.request.SignupRequestV1
 import com.citysavior.android.data.utils.invokeApiAndConvertAsync
@@ -20,7 +20,7 @@ import javax.inject.Singleton
 
 @Singleton
 class AuthRepositoryImpl @Inject constructor(
-    private val apiService: ApiService,
+    private val apiClient: ApiClient,
     private val dataStore: DataStore<Preferences>,
 ) : AuthRepository {
     override suspend fun login(): Async<JwtToken> {
@@ -67,14 +67,14 @@ class AuthRepositoryImpl @Inject constructor(
 
     override suspend fun getUserRole(): Async<UserRole> {
         return invokeApiAndConvertAsync(
-            api = { apiService.getUserRole() },
+            api = { apiClient.getUserRole() },
             convert = { it }
         )
     }
 
     override suspend fun changeUserRole(): Async<Unit> {
         return invokeApiAndConvertAsync(
-            api = { apiService.changeUserRole() },
+            api = { apiClient.changeUserRole() },
             convert = {  }
         )
     }

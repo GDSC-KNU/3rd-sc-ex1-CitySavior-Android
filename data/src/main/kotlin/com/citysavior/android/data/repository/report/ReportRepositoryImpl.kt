@@ -1,6 +1,6 @@
 package com.citysavior.android.data.repository.report
 
-import com.citysavior.android.data.api.ApiService
+import com.citysavior.android.data.api.ApiClient
 import com.citysavior.android.data.dto.report.request.CreateReportCommentRequest
 import com.citysavior.android.data.dto.report.response.toDomain
 import com.citysavior.android.data.utils.invokeApiAndConvertAsync
@@ -21,7 +21,7 @@ import kotlin.random.Random
 
 @Singleton
 class ReportRepositoryImpl @Inject constructor(
-    private val apiService: ApiService,
+    private val apiClient: ApiClient,
 ) : ReportRepository {
     override suspend fun getReportStatistics(point: Point): Async<ReportStatistics> {
         delay(400)
@@ -62,7 +62,7 @@ class ReportRepositoryImpl @Inject constructor(
             category = reportPoint.category,
         ))
         return invokeApiAndConvertAsync(
-            api = { apiService.getReportDetail(reportPoint.id) },
+            api = { apiClient.getReportDetail(reportPoint.id) },
             convert = { it.toDomain(reportPoint) }
         )
     }
@@ -78,7 +78,7 @@ class ReportRepositoryImpl @Inject constructor(
     ): Async<Long> {
         val formFile = MultipartBody.Part.createFormData("file", fileName, file.asRequestBody())
         return invokeApiAndConvertAsync(
-            api = { apiService.createReport(formFile, latitude, longitude, detail, category, damageRatio) },
+            api = { apiClient.createReport(formFile, latitude, longitude, detail, category, damageRatio) },
             convert = { it }
         )
     }
@@ -88,14 +88,14 @@ class ReportRepositoryImpl @Inject constructor(
         return Async.Success(Random.nextLong())
         val request = CreateReportCommentRequest(content)
         return invokeApiAndConvertAsync(
-            api = { apiService.createComment(reportPointId, request) },
+            api = { apiClient.createComment(reportPointId, request) },
             convert = { it }
         )
     }
 
     override suspend fun endReport(reportPointId: Long): Async<Unit> {
         return invokeApiAndConvertAsync(
-            api = { apiService.endReport(reportPointId) },
+            api = { apiClient.endReport(reportPointId) },
             convert = { it }
         )
     }

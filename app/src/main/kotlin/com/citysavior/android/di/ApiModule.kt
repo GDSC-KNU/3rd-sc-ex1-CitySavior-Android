@@ -1,7 +1,7 @@
 package com.citysavior.android.di
 
 import com.citysavior.android.data.api.ApiConstants.BASE_URL
-import com.citysavior.android.data.api.ApiService
+import com.citysavior.android.data.api.ApiClient
 import com.citysavior.android.data.api.AuthInterceptor
 import com.citysavior.android.data.api.HeaderInterceptor
 import com.citysavior.android.domain.repository.auth.JwtTokenRepository
@@ -98,7 +98,7 @@ object ApiModule {
 
     @Singleton
     @Provides
-    fun providerApi(retrofit: Retrofit): ApiService {
-        return retrofit.create(ApiService::class.java)
+    fun providerApi(retrofit: Retrofit): ApiClient {
+        return retrofit.create(ApiClient::class.java)
     }
 }

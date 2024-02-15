@@ -4,7 +4,7 @@ import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.doublePreferencesKey
 import androidx.datastore.preferences.core.edit
-import com.citysavior.android.data.api.ApiService
+import com.citysavior.android.data.api.ApiClient
 import com.citysavior.android.data.dto.user.response.toDomain
 import com.citysavior.android.data.utils.invokeApiAndConvertAsync
 import com.citysavior.android.domain.model.common.Async
@@ -20,14 +20,14 @@ import javax.inject.Singleton
 
 @Singleton
 class UserRepositoryImpl @Inject constructor(
-    private val apiService: ApiService,
+    private val apiClient: ApiClient,
     private val datastore : DataStore<Preferences>
 ) : UserRepository {
     override suspend fun getUserInfo(): Async<UserInfo> {
         delay(400)
         return Async.Success(UserInfo.fixture())
         return invokeApiAndConvertAsync(
-            api = { apiService.getUserInfo() },
+            api = { apiClient.getUserInfo() },
             convert = { it.toDomain() }
         )
     }

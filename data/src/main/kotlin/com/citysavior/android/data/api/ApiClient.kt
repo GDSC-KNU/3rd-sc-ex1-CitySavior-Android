@@ -24,7 +24,7 @@ import retrofit2.http.Part
 import retrofit2.http.Path
 import retrofit2.http.Query
 
-interface ApiService {
+interface ApiClient {
     //--------------------- Auth ---------------------//
     @POST("/v1/auth/login")
     @Headers("Auth: false")
