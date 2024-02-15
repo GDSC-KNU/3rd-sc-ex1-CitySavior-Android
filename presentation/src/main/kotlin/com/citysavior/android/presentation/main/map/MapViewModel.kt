@@ -8,6 +8,8 @@ import com.citysavior.android.domain.model.report.Comment
 import com.citysavior.android.domain.model.report.Point
 import com.citysavior.android.domain.model.report.ReportPoint
 import com.citysavior.android.domain.model.report.ReportPointDetail
+import com.citysavior.android.domain.model.user.UserRole
+import com.citysavior.android.domain.repository.auth.AuthRepository
 import com.citysavior.android.domain.repository.report.ReportRepository
 import com.citysavior.android.domain.repository.user.UserRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -21,20 +23,30 @@ import javax.inject.Inject
 class MapViewModel @Inject constructor(
     private val reportRepository: ReportRepository,
     private val userRepository: UserRepository,
+    private val authRepository: AuthRepository,
 ) : ViewModel(){
     val reports: StateFlow<Async<List<ReportPoint>>> get() = _reports
     private val _reports = MutableStateFlow<Async<List<ReportPoint>>>(Async.Loading)
 
+    val userRole : StateFlow<UserRole> get() = _userRole
+    private val _userRole = MutableStateFlow(UserRole.USER)
+
     init {
         getUserPoint()
+        viewModelScope.launch {
+            authRepository.getUserRole().onSuccess {
+                _userRole.value = it
+            }
+        }
     }
 
     fun getReports(
         latitude: Double,
         longitude: Double,
+        radius: Int = 1000,
     ){
         viewModelScope.launch {
-            val resp = reportRepository.getReportList(latitude, longitude)
+            val resp = reportRepository.getReportList(latitude, longitude, radius)
             resp.onSuccess {
                 if(_reports.value is Async.Loading){
                     _reports.value = Async.Success(it)
@@ -82,6 +94,21 @@ class MapViewModel @Inject constructor(
                         prev
                     }
                 }
+                _reports.value = Async.Success(newReports)
+            }
+        }
+    }
+
+    fun endReport(
+        reportId: Long,
+    ){
+        if(userRole.value != UserRole.ADMIN) return
+        
+        val prevReports = (_reports.value as Async.Success).data
+        viewModelScope.launch {
+            val resp = reportRepository.endReport(reportId)
+            resp.onSuccess {
+                val newReports = prevReports.filter { it.id != reportId }
                 _reports.value = Async.Success(newReports)
             }
         }

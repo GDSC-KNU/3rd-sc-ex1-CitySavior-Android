@@ -13,6 +13,7 @@ interface ReportRepository {
     suspend fun getReportList(
         latitude: Double,
         longitude: Double,
+        radius: Int,
     ): Async<List<ReportPoint>>
     suspend fun getReportDetail(reportPoint: ReportPoint): Async<ReportPointDetail>
     suspend fun createReport(
@@ -26,4 +27,5 @@ interface ReportRepository {
     ): Async<Long>
     suspend fun createReportComment(reportPointId : Long, content : String) : Async<Long>
 
+    suspend fun endReport(reportPointId: Long): Async<Unit>
 }

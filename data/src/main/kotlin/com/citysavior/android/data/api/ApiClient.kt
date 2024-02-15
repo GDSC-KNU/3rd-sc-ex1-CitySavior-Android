@@ -10,6 +10,7 @@ import com.citysavior.android.data.dto.report.response.ReportsByMapResponse
 import com.citysavior.android.data.dto.report.response.StatisticsByMapResponse
 import com.citysavior.android.data.dto.user.response.UserInfoResponse
 import com.citysavior.android.domain.model.report.Category
+import com.citysavior.android.domain.model.user.UserRole
 import okhttp3.MultipartBody
 import retrofit2.Response
 import retrofit2.http.Body
@@ -18,46 +19,54 @@ import retrofit2.http.Headers
 import retrofit2.http.Multipart
 import retrofit2.http.PATCH
 import retrofit2.http.POST
+import retrofit2.http.PUT
 import retrofit2.http.Part
 import retrofit2.http.Path
 import retrofit2.http.Query
 
-interface ApiService {
+interface ApiClient {
     //--------------------- Auth ---------------------//
-    @POST("/auth/login/v1")
+    @POST("/v1/auth/login")
     @Headers("Auth: false")
     suspend fun login(@Body request: LoginRequestV1): Response<TokenResponse>
 
-    @POST("/auth/signup/v1")
+    @POST("/v1/auth/signup/v1")
     @Headers("Auth: false")
     suspend fun signup(@Body request: SignupRequestV1): Response<TokenResponse>
 
+    @GET("/v1/auth/role")
+    suspend fun getUserRole(): Response<UserRole>
+
+    @PUT("/v1/auth/role")
+    suspend fun changeUserRole(): Response<Unit>
+
 
     //--------------------- User ---------------------//
-    @GET("/user/info")
+    @GET("/v1/user/info")
     suspend fun getUserInfo(): Response<UserInfoResponse>
 
 
     //--------------------- Achievement ---------------------//
-    @GET("/achievement")
+    @GET("/v1/achievement")
     suspend fun getAchievementInfo(): Response<AchievementInfoResponse>
 
 
     //--------------------- Report ---------------------//
-    @GET("/reports/statistics")
+    @GET("/v1/reports/statistics")
     suspend fun getReportStatistics(
         @Query("latitude") latitude: Double,
         @Query("longitude") longitude: Double,
+        @Query("radius") radius: Int,
     ) : Response<StatisticsByMapResponse>
 
-    @GET("/reports")
+    @GET("/v1/reports")
     suspend fun getReportInfo(
         @Query("latitude") latitude: Double,
         @Query("longitude") longitude: Double,
     ) : Response<ReportsByMapResponse>
 
     @Multipart
-    @POST("/reports/")
+    @POST("/v1/reports/")
     suspend fun createReport(
         @Part imageFiles : MultipartBody.Part,
         @Part("latitude") latitude : Double,
@@ -67,16 +76,16 @@ interface ApiService {
         @Part("damageRatio") damageRatio : Int,
     ) : Response<Long>
 
-    @GET("/reports/{reportId}")
+    @GET("/v1/reports/{reportId}")
     suspend fun getReportDetail(@Path("reportId") reportId : Long) : Response<ReportDetailResponse>
 
-    @POST("/reports/{reportId}/comment")
+    @POST("/v1/reports/{reportId}/comment")
     suspend fun createComment(
         @Path("reportId") reportId : Long,
         @Body request : CreateReportCommentRequest,
     ) : Response<Long>
 
-    @PATCH("/reports/{reportId}/end")
+    @PATCH("/v1/reports/{reportId}/end")
     suspend fun endReport(@Path("reportId") reportId : Long) : Response<Unit>
 
 }

@@ -1,10 +1,14 @@
 package com.citysavior.android.data.utils
 
+import com.citysavior.android.data.api.ErrorResponse
+import com.citysavior.android.data.api.ServerErrorException
 import com.citysavior.android.domain.model.common.Async
+import com.google.gson.Gson
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import retrofit2.Response
+
 
 /**
  * Convert [Response] to [Async] type.
@@ -25,10 +29,12 @@ suspend fun <Data, Domain> invokeApiAndConvertAsync(
         if (response.isSuccessful && body != null) {
             Async.Success(convert((body as Data?)!!))
         } else {
-            Async.Error(Throwable(response.message()))
+            val gson = Gson()
+            val errorResponse = gson.fromJson(response.errorBody()?.string(), ErrorResponse::class.java)
+            Async.Error(errorResponse.toApiResultException())
         }
     } catch (e: Exception) {//response body convert error
-        Async.Error(e)
+        Async.Error(ServerErrorException(e.message ?: "Unknown Server Error"))
     }
 }
 

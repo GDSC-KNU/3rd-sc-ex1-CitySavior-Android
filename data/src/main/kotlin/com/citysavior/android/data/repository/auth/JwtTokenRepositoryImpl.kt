@@ -9,6 +9,7 @@ import com.citysavior.android.domain.model.common.Async
 import com.citysavior.android.domain.model.common.toAsync
 import com.citysavior.android.domain.repository.auth.JwtTokenRepository
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -63,6 +64,24 @@ class JwtTokenRepositoryImpl @Inject constructor(
                 refreshToken= refreshToken,
             )
         }.toAsync()
+    }
+
+    override suspend fun findJwtToken(): JwtToken? {
+        return try {
+            datastore.data.map {
+                val accessToken = it[ACCESS_TOKEN]
+                val refreshToken = it[REFRESH_TOKEN]
+                if(accessToken == null || refreshToken == null){
+                    throw IllegalStateException("token is not initialized")
+                }
+                JwtToken(
+                    accessToken= accessToken,
+                    refreshToken= refreshToken,
+                )
+            }.first()
+        }catch (e: Exception){
+            null
+        }
     }
 
     override suspend fun deleteJwtToken(): Async<Unit> {
