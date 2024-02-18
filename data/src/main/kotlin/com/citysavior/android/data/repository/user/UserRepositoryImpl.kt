@@ -1,6 +1,5 @@
 package com.citysavior.android.data.repository.user
 
-import android.util.Log
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.doublePreferencesKey
@@ -26,10 +25,7 @@ class UserRepositoryImpl @Inject constructor(
     override suspend fun getUserInfo(): Async<UserInfo> {
         return invokeApiAndConvertAsync(
             api = { apiClient.getUserInfo() },
-            convert = {
-                Log.d("getUserInfo", "getUserInfo: ${it.toString()}")
-                it.toDomain()
-            }
+            convert = { it.toDomain() }
         )
     }
 

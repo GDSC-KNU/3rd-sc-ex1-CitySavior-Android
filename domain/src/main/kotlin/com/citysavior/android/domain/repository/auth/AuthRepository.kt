@@ -11,4 +11,6 @@ interface AuthRepository {
     suspend fun setAfterOnBoarding(): Async<Unit>
     suspend fun getUserRole(): Async<UserRole>
     suspend fun changeUserRole(): Async<Unit>
+
+    suspend fun isExistUuid(): Boolean // 회원가입 여부 확인
 }

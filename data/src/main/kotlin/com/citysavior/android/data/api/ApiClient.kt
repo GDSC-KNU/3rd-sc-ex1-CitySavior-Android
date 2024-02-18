@@ -63,6 +63,7 @@ interface ApiClient {
     suspend fun getReportInfo(
         @Query("latitude") latitude: Double,
         @Query("longitude") longitude: Double,
+        @Query("radius") radius: Int,
     ) : Response<ReportsByMapResponse>
 
     @Multipart

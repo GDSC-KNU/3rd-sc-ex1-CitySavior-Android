@@ -16,7 +16,6 @@ import okhttp3.RequestBody.Companion.asRequestBody
 import java.io.File
 import javax.inject.Inject
 import javax.inject.Singleton
-import kotlin.random.Random
 
 @Singleton
 class ReportRepositoryImpl @Inject constructor(
@@ -35,7 +34,7 @@ class ReportRepositoryImpl @Inject constructor(
         radius: Int,
     ): Async<List<ReportPoint>> {
         return invokeApiAndConvertAsync(
-            api = { apiClient.getReportInfo(latitude, longitude) },
+            api = { apiClient.getReportInfo(latitude, longitude, radius) },
             convert = { it.points.toDomain() }
         )
     }

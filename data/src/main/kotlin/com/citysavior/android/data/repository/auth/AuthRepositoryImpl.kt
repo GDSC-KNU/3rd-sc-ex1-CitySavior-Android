@@ -78,6 +78,13 @@ class AuthRepositoryImpl @Inject constructor(
         )
     }
 
+    override suspend fun isExistUuid(): Boolean {
+        val resp =  dataStore.data.map {
+            it[UUID]
+        }.first()
+        return resp != null
+    }
+
 
     /**
      * UUID를 가져오거나 없으면 생성해서 저장하고 가져온다.

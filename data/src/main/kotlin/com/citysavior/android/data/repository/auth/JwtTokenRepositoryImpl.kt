@@ -1,5 +1,6 @@
 package com.citysavior.android.data.repository.auth
 
+import android.util.Log
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
@@ -19,6 +20,7 @@ class JwtTokenRepositoryImpl @Inject constructor(
     private val datastore : DataStore<Preferences>
 ) : JwtTokenRepository {
     override suspend fun saveJwtToken(jwtToken: JwtToken): Async<Unit> {
+        Log.d("JwtTokenRepositoryImpl", "saveJwtToken")
         return try{
             datastore.edit {
                 it[ACCESS_TOKEN] = jwtToken.accessToken

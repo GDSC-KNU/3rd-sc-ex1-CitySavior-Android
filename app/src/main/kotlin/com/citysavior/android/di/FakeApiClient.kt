@@ -94,7 +94,8 @@ class FakeApiClient :ApiClient{
 
     override suspend fun getReportInfo(
         latitude: Double,
-        longitude: Double
+        longitude: Double,
+        radius: Int
     ): Response<ReportsByMapResponse> {
         delay(400)
         val points = List(10) {
