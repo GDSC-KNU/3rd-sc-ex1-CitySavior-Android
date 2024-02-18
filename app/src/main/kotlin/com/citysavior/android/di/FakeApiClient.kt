@@ -20,6 +20,7 @@ import com.citysavior.android.domain.model.user.UserRole
 import kotlinx.coroutines.delay
 import okhttp3.MultipartBody
 import retrofit2.Response
+import retrofit2.http.Part
 import java.time.LocalDate
 import javax.inject.Singleton
 import kotlin.random.Random
@@ -113,12 +114,8 @@ class FakeApiClient :ApiClient{
     }
 
     override suspend fun createReport(
-        imageFiles: MultipartBody.Part,
-        latitude: Double,
-        longitude: Double,
-        detail: String,
-        category: Category,
-        damageRatio: Int
+        @Part imageFiles: MultipartBody.Part,
+        @Part(value = "requestDto") requestDto: MultipartBody.Part
     ): Response<Long> {
         delay(400)
         return Response.success(Random.nextLong())

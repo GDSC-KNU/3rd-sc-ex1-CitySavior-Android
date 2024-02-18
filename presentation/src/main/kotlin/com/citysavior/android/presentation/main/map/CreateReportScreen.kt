@@ -2,6 +2,7 @@ package com.citysavior.android.presentation.main.map
 
 import android.content.ContentResolver
 import android.content.ContentValues
+import android.content.Context
 import android.net.Uri
 import android.os.Environment
 import android.provider.MediaStore
@@ -43,6 +44,9 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.core.content.FileProvider
 import coil.compose.rememberAsyncImagePainter
+import com.citysavior.android.domain.model.report.Category
+import com.citysavior.android.domain.model.report.Point
+import com.citysavior.android.domain.params.report.CreateReportParams
 import com.citysavior.android.presentation.common.component.CustomTextEditField
 import com.citysavior.android.presentation.common.constant.Colors
 import com.citysavior.android.presentation.common.constant.Sizes
@@ -53,12 +57,13 @@ import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.rememberPermissionState
 import timber.log.Timber
 import java.io.File
+import java.io.FileOutputStream
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalPermissionsApi::class)
 @Composable
 fun CreateReportScreen(
     onBackIconClick : () -> Unit = {},
-    onUploadButtonClick : ( /*TODO*/) -> Unit = {},
+    onUploadButtonClick : (CreateReportParams) -> Unit = {},
 ) {
     val context = LocalContext.current
     val cameraPermissionState = rememberPermissionState(android.Manifest.permission.CAMERA)
@@ -267,7 +272,16 @@ fun CreateReportScreen(
                 vertical = 12.dp,
             ),
             onClick = {
-                onUploadButtonClick()
+                val file = getFileFromContentUri(context, capturedImageUri)
+                if(file != null){
+                    val params = CreateReportParams(
+                        file = file,
+                        point = Point.fixture(),
+                        description = description,
+                        category = Category.OTHER
+                    )
+                    onUploadButtonClick(params)
+                }
             },
         ) {
             Text(
@@ -280,4 +294,18 @@ fun CreateReportScreen(
         Spacer(modifier = Modifier.height(20.dp))
     }
 }
+
+fun getFileFromContentUri(context: Context, uri: Uri): File? {
+    val contentResolver = context.contentResolver
+    val inputStream = contentResolver.openInputStream(uri)
+    val tempFile = File.createTempFile("temp", null, context.cacheDir)
+    tempFile.deleteOnExit()
+    inputStream?.use { input ->
+        FileOutputStream(tempFile).use { output ->
+            input.copyTo(output)
+        }
+    }
+    return tempFile
+}
+
 
