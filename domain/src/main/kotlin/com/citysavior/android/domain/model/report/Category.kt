@@ -6,7 +6,7 @@ enum class Category(
     ROAD_TRAFFIC("도로 및 교통"),
     BUILD_STRUCTURE("건물 및 구조물"),
     ENVIRONMENT("환경"),
-    PARK_PUBIC("공원 및 공공 시설"),
+    PARK_PUBLIC("공원 및 공공 시설"),
     FIRE_HAZARD("화재 위험"),
     SAFETY_SECURITY("안전 및 보안"),
     CITY_OBSTACLE("도시 장애물"),
