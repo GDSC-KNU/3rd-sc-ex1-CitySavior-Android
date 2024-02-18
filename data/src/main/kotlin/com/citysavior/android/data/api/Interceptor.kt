@@ -1,5 +1,6 @@
 package com.citysavior.android.data.api
 
+import android.util.Log
 import com.citysavior.android.data.api.ApiConstants.BASE_URL
 import com.citysavior.android.data.dto.auth.response.TokenResponse
 import com.citysavior.android.data.dto.auth.response.toDomain
@@ -43,6 +44,7 @@ class AuthInterceptor @Inject constructor(
             }
 
             // 토큰 재발급
+            Log.d("AuthInterceptor", "토큰 재발급 요청")
             val refreshRequest = Request.Builder()
                 .url("$BASE_URL/auth/token/refresh")
                 .post("".toRequestBody())
@@ -52,6 +54,7 @@ class AuthInterceptor @Inject constructor(
             if(refreshResponse.code == 200) {
                 val gson = Gson()
                 val newToken = gson.fromJson(refreshResponse.body?.string(), TokenResponse::class.java)
+                Log.d("AuthInterceptor", "토큰 재발급 성공 : $newToken")
                 runBlocking {
                     jwtTokenRepository.saveJwtToken(newToken.toDomain())
                 }
