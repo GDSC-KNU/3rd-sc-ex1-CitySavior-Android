@@ -26,7 +26,7 @@ class AuthRepositoryImpl @Inject constructor(
 ) : AuthRepository {
     override suspend fun login(): Async<JwtToken> {
         val uuid = getUUID()
-        val request = LoginRequestV1(uuid = uuid)
+        val request = LoginRequestV1(email = uuid)
         return invokeApiAndConvertAsync(
             api = { apiClient.login(request) },
             convert = { it.toDomain() }
@@ -35,7 +35,7 @@ class AuthRepositoryImpl @Inject constructor(
 
     override suspend fun signUp(): Async<JwtToken> {
         val uuid = getUUID()
-        val request = SignupRequestV1(uuid = uuid)
+        val request = SignupRequestV1(email = uuid)
         return invokeApiAndConvertAsync(
             api = { apiClient.signup(request) },
             convert = { it.toDomain() }

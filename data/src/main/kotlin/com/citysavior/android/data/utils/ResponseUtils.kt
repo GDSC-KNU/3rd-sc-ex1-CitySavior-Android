@@ -1,5 +1,6 @@
 package com.citysavior.android.data.utils
 
+import android.util.Log
 import com.citysavior.android.data.api.ErrorResponse
 import com.citysavior.android.data.api.ServerErrorException
 import com.citysavior.android.domain.model.common.Async
@@ -27,13 +28,14 @@ suspend fun <Data, Domain> invokeApiAndConvertAsync(
         val response = api.invoke()
         val body = response.body()
         if (response.isSuccessful && body != null) {
-            Async.Success(convert((body as Data?)!!))
+            Async.Success(convert(body))
         } else {
             val gson = Gson()
             val errorResponse = gson.fromJson(response.errorBody()?.string(), ErrorResponse::class.java)
             Async.Error(errorResponse.toApiResultException())
         }
     } catch (e: Exception) {//response body convert error
+        Log.d("invokeApiAndConvertAsync", "convert Error: ${e.message}")
         Async.Error(ServerErrorException(e.message ?: "Unknown Server Error"))
     }
 }
@@ -52,13 +54,13 @@ suspend fun <Data, Domain> invokeApiAndConvertAsync(
 suspend fun <Data, Domain> invokeApiAndMakeFlow(
     api: suspend () -> Response<Data>,
     intervalMillis: Long,
-    convert: Data.() -> Domain
+    convert: suspend (Data) -> Domain
 ): Flow<Domain> = flow {
     while (true) {
         val response = api.invoke()
         val body = response.body()
         if (response.isSuccessful && body != null) {
-            emit((body as Data?)!!.convert())
+            emit(convert(body))
         } else {
             throw Throwable(response.message())
         }

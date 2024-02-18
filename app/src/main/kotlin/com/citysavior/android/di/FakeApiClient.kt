@@ -79,16 +79,17 @@ class FakeApiClient :ApiClient{
         radius: Int
     ): Response<StatisticsByMapResponse> {
         delay(400)
-        val randomR = Random.nextInt(1,100000)
-        val details = List(3) {
-            val random = Random.nextInt(1,100)
-            StatisticsDetailDto(
-                Category.values()[random % Category.values().size],
-                100,
-                random
+        val statisticsDetails = Category.values().map {
+            it to StatisticsDetailDto(
+                Random.nextInt(100),
+                Random.nextInt(100)
             )
-        }
-        return Response.success(StatisticsByMapResponse(100000, randomR, details))
+        }.toMap()
+        return Response.success(StatisticsByMapResponse(
+            Random.nextInt(100),
+            Random.nextInt(100),
+            statisticsDetails
+        ))
     }
 
     override suspend fun getReportInfo(

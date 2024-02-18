@@ -30,7 +30,7 @@ interface ApiClient {
     @Headers("Auth: false")
     suspend fun login(@Body request: LoginRequestV1): Response<TokenResponse>
 
-    @POST("/v1/auth/signup/v1")
+    @POST("/v1/auth/signup")
     @Headers("Auth: false")
     suspend fun signup(@Body request: SignupRequestV1): Response<TokenResponse>
 

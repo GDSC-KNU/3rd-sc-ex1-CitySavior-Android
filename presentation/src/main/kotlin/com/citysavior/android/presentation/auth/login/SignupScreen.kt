@@ -19,6 +19,7 @@ fun SignupScreen(
             signupButtonClick.invoke()
         }else{
             //TODO error handling
+            viewModel.login()
         }
     }
     DefaultLayout {
