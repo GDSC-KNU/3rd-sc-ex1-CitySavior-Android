@@ -82,8 +82,14 @@ class HeaderInterceptor @Inject constructor(
 
         var accessToken: String
         runBlocking {
-            val jwtToken = jwtTokenRepository.findJwtToken()!!
-            accessToken = jwtToken.accessToken
+            val jwtToken = jwtTokenRepository.findJwtToken()
+            accessToken = jwtToken?.accessToken ?: ""
+        }
+        if(accessToken.isEmpty()){
+            val newRequest = chain.request().newBuilder()
+                .removeHeader("Auth")
+                .build()
+            return chain.proceed(newRequest)
         }
         val newRequest = chain.request().newBuilder()
             .removeHeader("Auth")
