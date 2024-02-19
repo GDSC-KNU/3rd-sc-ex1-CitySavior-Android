@@ -8,6 +8,16 @@ open class ReportPoint(
     val category: Category,
     val weight: Int,
 ) {
+    fun moveCopy(
+        point: Point = this.point,
+    ): ReportPoint {
+        return ReportPoint(
+            id = this.id,
+            point = point,
+            category = this.category,
+            weight = this.weight,
+        )
+    }
     companion object {
         fun fixture(
             id: Long = 1L,

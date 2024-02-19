@@ -19,6 +19,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
@@ -54,13 +55,19 @@ class MapViewModel @Inject constructor(
                     _reports.value = Async.Success(it)
                     return@onSuccess
                 }else if(_reports.value is Async.Success){
-                    val prevReports = (_reports.value as Async.Success).data.toSet()
-                    _reports.value = Async.Success((prevReports + it.toSet()).toList())
+                    val prevReports = (_reports.value as Async.Success).data
+
+                    val currentReports = adjustReportPointById(prevReports = prevReports, newReports = it)
+                    val adjustedReportsByPoint = adjustOverlappingReportPoint(currentReports)
+
+                    _reports.value = Async.Success(adjustedReportsByPoint)
                     return@onSuccess
                 }
             }
         }
     }
+
+
 
     fun getDetailReport(
         id: Long,
@@ -148,5 +155,70 @@ class MapViewModel @Inject constructor(
     fun getUserPoint() : Flow<Async<Point>> {
         return userRepository.getUserPoint()
     }
+
+    /**
+     * [ReportPoint]의 id를 기준으로 [prevReports]와 [newReports]를 비교하여
+     * [prevReports]에 없는 [newReports]를 추가하고, [prevReports]를 반환함
+     */
+    private fun adjustReportPointById(
+        prevReports: List<ReportPoint>,
+        newReports: List<ReportPoint>,
+    ): List<ReportPoint> {
+        val prevReportIds = prevReports.map { it.id }
+        val realNewReports = newReports.filter { report -> !prevReportIds.contains(report.id) }
+        return (prevReports + realNewReports).toList()
+    }
+
+
+    /**
+     * [ReportPoint]들의 위치가 겹치는 경우, 겹치는 위치를 조정함
+     * while문을 돌면서 겹치는 위치를 조정하고, 겹치는 위치가 없을 때까지 반복함
+     */
+    private fun adjustOverlappingReportPoint(
+        reportPoints: List<ReportPoint>,
+    ): List<ReportPoint>{
+        val duplicatedPoints = getDuplicatedPoints(reportPoints).toMutableList()
+
+        val adjustedPoints = (reportPoints - duplicatedPoints.toSet()).toMutableList()
+
+        while (getDuplicatedPoints(duplicatedPoints).isNotEmpty()){
+            val duplicatePoint = duplicatedPoints.first()
+            val adjusted = adjustReportPoint(duplicatePoint)
+
+            Timber.d("adjustOverlappingReportPoint: " + duplicatedPoints.size + "adjusted: " + adjusted.point.latitude + ", " + adjusted.point.longitude)
+            duplicatedPoints.remove(duplicatePoint)
+            adjustedPoints.add(adjusted)
+        }
+        //중복된 신고들이 제거되고 [duplicatedPoints]에서 남은 신고를 추가함
+        adjustedPoints += duplicatedPoints
+        return adjustedPoints
+    }
+
+    /**
+     * 위치가 동일한 신고들을 찾아서 리스트로 반환
+     * [Point]의 [latitude]와 [longitude]가 동일한 신고들을 찾아서 리스트로 반환
+     */
+    private fun getDuplicatedPoints(
+        reportPoints: List<ReportPoint>,
+    ): List<ReportPoint>{
+        return reportPoints.groupBy { it.point.latitude to it.point.longitude }
+            .filter { it.value.size > 1 }
+            .flatMap { it.value }
+    }
+
+    /**
+     * 랜덤하게 ReportPoint를 이동함
+     */
+    private fun adjustReportPoint(
+        reportPoint: ReportPoint,
+    ): ReportPoint{
+        val random1 = (-1..1).random() * 0.0001
+        val random2 = (-1..1).random() * 0.0001
+        return reportPoint.moveCopy(Point(
+            latitude = reportPoint.point.latitude + random1,
+            longitude = reportPoint.point.longitude + random2,
+        ))
+    }
+
 
 }
