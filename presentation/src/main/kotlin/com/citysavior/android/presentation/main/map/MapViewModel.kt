@@ -1,5 +1,6 @@
 package com.citysavior.android.presentation.main.map
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.citysavior.android.domain.model.common.Async
@@ -9,6 +10,7 @@ import com.citysavior.android.domain.model.report.Point
 import com.citysavior.android.domain.model.report.ReportPoint
 import com.citysavior.android.domain.model.report.ReportPointDetail
 import com.citysavior.android.domain.model.user.UserRole
+import com.citysavior.android.domain.params.report.CreateReportParams
 import com.citysavior.android.domain.repository.auth.AuthRepository
 import com.citysavior.android.domain.repository.report.ReportRepository
 import com.citysavior.android.domain.repository.user.UserRepository
@@ -73,6 +75,15 @@ class MapViewModel @Inject constructor(
                 val newReports = prevReports.map { prev -> if (prev.id == id) detail else prev }
                 _reports.value = Async.Success(newReports)
             }
+        }
+    }
+
+    fun createReport(
+        createReportParams: CreateReportParams,
+    ){
+        viewModelScope.launch {
+            Log.d("MapViewModel", "createReport: $createReportParams")
+            reportRepository.createReport(createReportParams)
         }
     }
 

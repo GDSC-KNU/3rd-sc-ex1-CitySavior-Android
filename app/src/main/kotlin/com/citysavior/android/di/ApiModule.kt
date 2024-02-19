@@ -99,7 +99,6 @@ object ApiModule {
     @Singleton
     @Provides
     fun providerApi(retrofit: Retrofit): ApiClient {
-        return FakeApiClient()
-        //return retrofit.create(ApiClient::class.java)
+        return retrofit.create(ApiClient::class.java)
     }
 }

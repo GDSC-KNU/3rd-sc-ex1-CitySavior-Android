@@ -281,7 +281,11 @@ fun MapScreen(
             (LocalView.current.parent as DialogWindowProvider).window.setDimAmount(0f)
             CreateReportScreen(
                 onBackIconClick = { createNewReport = false },
-                onUploadButtonClick = { createNewReport = false },
+                onUploadButtonClick = { params->
+                    mapViewModel.createReport(params)
+                    createNewReport = false
+                },
+
             )
         }
     }

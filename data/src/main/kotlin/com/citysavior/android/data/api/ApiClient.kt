@@ -9,9 +9,9 @@ import com.citysavior.android.data.dto.report.response.ReportDetailResponse
 import com.citysavior.android.data.dto.report.response.ReportsByMapResponse
 import com.citysavior.android.data.dto.report.response.StatisticsByMapResponse
 import com.citysavior.android.data.dto.user.response.UserInfoResponse
-import com.citysavior.android.domain.model.report.Category
 import com.citysavior.android.domain.model.user.UserRole
 import okhttp3.MultipartBody
+import okhttp3.RequestBody
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.GET
@@ -30,7 +30,7 @@ interface ApiClient {
     @Headers("Auth: false")
     suspend fun login(@Body request: LoginRequestV1): Response<TokenResponse>
 
-    @POST("/v1/auth/signup/v1")
+    @POST("/v1/auth/signup")
     @Headers("Auth: false")
     suspend fun signup(@Body request: SignupRequestV1): Response<TokenResponse>
 
@@ -63,17 +63,14 @@ interface ApiClient {
     suspend fun getReportInfo(
         @Query("latitude") latitude: Double,
         @Query("longitude") longitude: Double,
+        @Query("radius") radius: Int,
     ) : Response<ReportsByMapResponse>
 
     @Multipart
-    @POST("/v1/reports/")
+    @POST("/v1/reports")
     suspend fun createReport(
-        @Part imageFiles : MultipartBody.Part,
-        @Part("latitude") latitude : Double,
-        @Part("longitude") longitude : Double,
-        @Part("detail") detail : String,
-        @Part("categoryId") category : Category,
-        @Part("damageRatio") damageRatio : Int,
+        @Part imgFiles : MultipartBody.Part,
+        @Part("requestDto") requestDto : RequestBody,
     ) : Response<Long>
 
     @GET("/v1/reports/{reportId}")
@@ -90,5 +87,5 @@ interface ApiClient {
 
 }
 object ApiConstants {
-    const val BASE_URL = "http://10.0.2.2:8080"
+    const val BASE_URL = "http://34.64.38.103:8080"
 }

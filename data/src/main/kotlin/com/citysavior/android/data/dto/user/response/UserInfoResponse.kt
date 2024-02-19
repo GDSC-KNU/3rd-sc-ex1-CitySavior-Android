@@ -9,7 +9,7 @@ data class UserInfoResponse(
     val totalReportCount : Int,
     val totalRepairedCount : Int,
     val achieveCollectCount : Int,
-    val achieveProgressing : List<AchieveProgressDto>
+    val achieveMemberResponses : List<AchieveProgressDto>,
 )
 
 data class AchieveProgressDto(
@@ -38,5 +38,5 @@ fun UserInfoResponse.toDomain() = UserInfo(
     totalReportCount = totalReportCount,
     totalRepairedCount = totalRepairedCount,
     achieveCollectCount = achieveCollectCount,
-    achieveProgressingList = achieveProgressing.toDomain()
+    achieveProgressingList = achieveMemberResponses.toDomain(),
 )

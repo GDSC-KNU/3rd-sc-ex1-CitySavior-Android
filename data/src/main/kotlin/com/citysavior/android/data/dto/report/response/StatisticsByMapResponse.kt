@@ -7,11 +7,10 @@ import com.citysavior.android.domain.model.report.StatisticsDetail
 data class StatisticsByMapResponse(
     val totalReports : Int,
     val resolvedReports : Int,
-    val statisticsDetails : List<StatisticsDetailDto>,
+    val statisticsDetails : Map<Category,StatisticsDetailDto>,
 )
 
 data class StatisticsDetailDto(
-    val category : Category,
     val totalReports : Int,
     val resolvedReports : Int,
 )
@@ -19,11 +18,13 @@ data class StatisticsDetailDto(
 fun StatisticsByMapResponse.toDomain() = ReportStatistics(
     totalReports = totalReports,
     resolvedReports = resolvedReports,
-    statisticsDetails = statisticsDetails.map { it.toDomain() },
+    statisticsDetails = statisticsDetails.keys.map {
+        statisticsDetails[it]!!.toDomain(it)
+    }
 )
 
 
-fun StatisticsDetailDto.toDomain() = StatisticsDetail(
+fun StatisticsDetailDto.toDomain(category: Category) = StatisticsDetail(
     category = category,
     totalReports = totalReports,
     resolvedReports = resolvedReports,

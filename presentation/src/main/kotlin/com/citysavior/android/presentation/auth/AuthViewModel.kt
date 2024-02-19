@@ -28,6 +28,15 @@ class AuthViewModel @Inject constructor(
         return null
     }
 
+    fun login(){
+        viewModelScope.launch {
+            val token = authRepository.login()
+            token.onSuccess {
+                jwtTokenRepository.saveJwtToken(it)
+            }
+        }
+    }
+
     suspend fun onBoardingDone(){
         authRepository.setAfterOnBoarding()
     }

@@ -45,10 +45,17 @@ fun DailyProgress(
             style = TextStyles.CONTENT_SMALL1_STYLE,
         )
         Spacer(modifier = Modifier.weight(1f))
-        Text(
-            text = "${((progress.first).toFloat()/(progress.second).toFloat()*10000).roundToInt()/100.0}%",
-            style = TextStyles.TITLE_MEDIUM2,
-        )
+        if(progress.second != 0){
+            Text(
+                text = "${((progress.first).toFloat()/(progress.second).toFloat()*10000).roundToInt()/100.0}%",
+                style = TextStyles.TITLE_MEDIUM2,
+            )
+        }else{
+            Text(
+                text = "0%",
+                style = TextStyles.TITLE_MEDIUM2,
+            )
+        }
         Spacer(modifier = Modifier.height(Sizes.INTERVAL3))
         CustomProgress(
             width = 340.dp,

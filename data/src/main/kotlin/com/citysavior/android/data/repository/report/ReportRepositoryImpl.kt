@@ -2,21 +2,23 @@ package com.citysavior.android.data.repository.report
 
 import com.citysavior.android.data.api.ApiClient
 import com.citysavior.android.data.dto.report.request.CreateReportCommentRequest
+import com.citysavior.android.data.dto.report.request.toData
 import com.citysavior.android.data.dto.report.response.toDomain
 import com.citysavior.android.data.utils.invokeApiAndConvertAsync
 import com.citysavior.android.domain.model.common.Async
-import com.citysavior.android.domain.model.report.Category
 import com.citysavior.android.domain.model.report.Point
 import com.citysavior.android.domain.model.report.ReportPoint
 import com.citysavior.android.domain.model.report.ReportPointDetail
 import com.citysavior.android.domain.model.report.ReportStatistics
+import com.citysavior.android.domain.params.report.CreateReportParams
 import com.citysavior.android.domain.repository.report.ReportRepository
+import com.google.gson.Gson
+import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.asRequestBody
-import java.io.File
+import okhttp3.RequestBody.Companion.toRequestBody
 import javax.inject.Inject
 import javax.inject.Singleton
-import kotlin.random.Random
 
 @Singleton
 class ReportRepositoryImpl @Inject constructor(
@@ -35,7 +37,7 @@ class ReportRepositoryImpl @Inject constructor(
         radius: Int,
     ): Async<List<ReportPoint>> {
         return invokeApiAndConvertAsync(
-            api = { apiClient.getReportInfo(latitude, longitude) },
+            api = { apiClient.getReportInfo(latitude, longitude, radius) },
             convert = { it.points.toDomain() }
         )
     }
@@ -48,17 +50,16 @@ class ReportRepositoryImpl @Inject constructor(
     }
 
     override suspend fun createReport(
-        fileName: String,
-        file: File,
-        latitude: Double,
-        longitude: Double,
-        detail: String,
-        category: Category,
-        damageRatio: Int
+        params: CreateReportParams,
     ): Async<Long> {
-        val formFile = MultipartBody.Part.createFormData("file", fileName, file.asRequestBody())
+        val requestFile = params.file.asRequestBody("image/*".toMediaType()) // 파일의 MIME 타입을 지정해야 합니다.
+        val requestDto = params.toData()
+
+        val formFile = MultipartBody.Part.createFormData("imgFiles", "imgFiles", requestFile)
+        val dto = Gson().toJson(requestDto).toRequestBody("application/json".toMediaType())
+
         return invokeApiAndConvertAsync(
-            api = { apiClient.createReport(formFile, latitude, longitude, detail, category, damageRatio) },
+            api = { apiClient.createReport(formFile,dto) },
             convert = { it }
         )
     }
