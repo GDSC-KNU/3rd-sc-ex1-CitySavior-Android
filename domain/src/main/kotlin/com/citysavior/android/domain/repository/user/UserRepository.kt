@@ -10,4 +10,6 @@ interface UserRepository {
 
     suspend fun saveUserPoint(point: Point): Async<Unit>
     fun getUserPoint(): Flow<Async<Point>>
+
+    suspend fun findUserPoint() : Point?
 }

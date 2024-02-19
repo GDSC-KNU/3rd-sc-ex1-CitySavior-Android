@@ -83,7 +83,20 @@ class MapViewModel @Inject constructor(
     ){
         viewModelScope.launch {
             Log.d("MapViewModel", "createReport: $createReportParams")
-            reportRepository.createReport(createReportParams)
+            val userPoint = userRepository.findUserPoint()
+            if(userPoint == null){
+                reportRepository.createReport(createReportParams)
+                getReports(createReportParams.point.latitude, createReportParams.point.longitude)
+                return@launch
+            }
+            val copyParams = createReportParams.copy(
+                point = Point(
+                    latitude = userPoint.latitude,
+                    longitude = userPoint.longitude,
+                )
+            )
+            reportRepository.createReport(copyParams)
+            getReports(userPoint.latitude, userPoint.longitude)
         }
     }
 

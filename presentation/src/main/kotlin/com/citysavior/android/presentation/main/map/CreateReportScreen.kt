@@ -276,7 +276,7 @@ fun CreateReportScreen(
                 if(file != null){
                     val params = CreateReportParams(
                         file = file,
-                        point = Point.fixture(),
+                        point = Point.fixture(),//ViewModel에서 유저위치 가져올 것
                         description = description,
                         category = Category.STREET
                     )

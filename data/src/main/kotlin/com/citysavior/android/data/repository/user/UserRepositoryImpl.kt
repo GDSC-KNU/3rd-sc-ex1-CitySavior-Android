@@ -13,6 +13,7 @@ import com.citysavior.android.domain.model.report.Point
 import com.citysavior.android.domain.model.user.UserInfo
 import com.citysavior.android.domain.repository.user.UserRepository
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -51,6 +52,22 @@ class UserRepositoryImpl @Inject constructor(
             Point(latitude = latitude, longitude = longitude)
         }.toAsync()
     }
+
+    override suspend fun findUserPoint(): Point? {
+        return try{
+            datastore.data.map {
+                val latitude = it[LATITUDE]
+                val longitude = it[LONGITUDE]
+                if(latitude == null || longitude == null){
+                    throw IllegalStateException("location information is not initialized")
+                }
+                Point(latitude = latitude, longitude = longitude)
+            }.first()
+        }catch (e: Exception){
+            null
+        }
+    }
+
 
     companion object{
         val LATITUDE = doublePreferencesKey("latitude")
