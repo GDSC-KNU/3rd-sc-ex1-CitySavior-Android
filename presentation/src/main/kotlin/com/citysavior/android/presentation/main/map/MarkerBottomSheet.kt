@@ -232,7 +232,7 @@ fun ModalMiddle(
             item {
                 AsyncImage(
                     modifier = Modifier
-                        .aspectRatio(1f),
+                        .fillMaxWidth(),
                     model = detail.imgUrl,
                     contentDescription = null,
                     contentScale = ContentScale.Crop,
