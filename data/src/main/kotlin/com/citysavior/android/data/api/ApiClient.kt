@@ -11,6 +11,7 @@ import com.citysavior.android.data.dto.report.response.StatisticsByMapResponse
 import com.citysavior.android.data.dto.user.response.UserInfoResponse
 import com.citysavior.android.domain.model.user.UserRole
 import okhttp3.MultipartBody
+import okhttp3.RequestBody
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.GET
@@ -68,8 +69,8 @@ interface ApiClient {
     @Multipart
     @POST("/v1/reports")
     suspend fun createReport(
-        @Part imageFiles : MultipartBody.Part,
-        @Part requestDto : MultipartBody.Part,
+        @Part imgFiles : MultipartBody.Part,
+        @Part("requestDto") requestDto : RequestBody,
     ) : Response<Long>
 
     @GET("/v1/reports/{reportId}")

@@ -278,7 +278,7 @@ fun CreateReportScreen(
                         file = file,
                         point = Point.fixture(),
                         description = description,
-                        category = Category.AIR_QUALITY
+                        category = Category.STREET
                     )
                     onUploadButtonClick(params)
                 }
