@@ -30,6 +30,7 @@ suspend fun <Data, Domain> invokeApiAndConvertAsync(
         if (response.isSuccessful && body != null) {
             Async.Success(convert(body))
         } else {
+            Log.d("invokeApiAndConvertAsync", "Error: ${response.message()} ${response.errorBody()?.string()}")
             val gson = Gson()
             val errorResponse = gson.fromJson(response.errorBody()?.string(), ErrorResponse::class.java)
             Async.Error(errorResponse.toApiResultException())

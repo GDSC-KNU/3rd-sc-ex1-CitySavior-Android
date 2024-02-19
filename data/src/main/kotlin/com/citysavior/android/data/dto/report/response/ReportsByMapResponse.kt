@@ -9,22 +9,22 @@ data class ReportsByMapResponse(
 )
 
 data class ReportPointDto(
-    val id: Long,
+    val reportId: Long,
     val latitude: Double,
     val longitude: Double,
     val category : Category,
-    val weight : Int,
+    val weight : Double,
 )
 
 
 fun ReportPointDto.toDomain() = ReportPoint(
-    id = id,
+    id = reportId,
     point = Point(
         latitude = latitude,
         longitude = longitude,
     ),
     category = category,
-    weight = weight,
+    weight = weight.toInt(),
 )
 
 fun List<ReportPointDto>.toDomain() = map(ReportPointDto::toDomain)
