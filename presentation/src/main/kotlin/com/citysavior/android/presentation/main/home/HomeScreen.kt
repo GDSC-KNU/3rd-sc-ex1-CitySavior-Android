@@ -1,15 +1,9 @@
 package com.citysavior.android.presentation.main.home
 
-import androidx.compose.foundation.background
-import androidx.compose.foundation.border
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.aspectRatio
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
@@ -17,7 +11,6 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -39,7 +32,6 @@ import com.citysavior.android.presentation.main.home.component.CategoryItem
 import com.citysavior.android.presentation.main.home.component.CustomChip
 import com.citysavior.android.presentation.main.home.component.DailyProgress
 import com.citysavior.android.presentation.main.home.component.DailyProgressLoading
-import org.jetbrains.annotations.ApiStatus.Experimental
 
 
 @Composable
@@ -145,8 +137,6 @@ fun HomeScreen(
                         }
                     }
 
-                    Spacer(modifier = Modifier.height(Sizes.INTERVAL0))
-                    ReportStatisticsGraph()
                     Spacer(modifier = Modifier.height(30.dp))
                 }
 
@@ -158,76 +148,6 @@ fun HomeScreen(
     }
 
 
-}
-
-@Experimental
-@Composable
-fun ReportStatisticsGraph() {
-    Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .border(
-                width = 1.dp,
-                color = Colors.WIDGET_BG_GREY,
-            )
-            .padding(8.dp),
-    ) {
-        Text(
-            "Report Statistics",
-            style = TextStyles.TITLE_MEDIUM2.copy(
-                fontWeight = TextStyles.MEDIUM,
-            ),
-        )
-        Spacer(modifier = Modifier.height(2.dp))
-        Text(
-            "Number of Reports",
-            style = TextStyles.CONTENT_SMALL1_STYLE,
-        )
-        Spacer(modifier = Modifier.height(10.dp))
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .aspectRatio(5 / 3f),
-        ){
-            Column {
-                HorizontalDivider()
-                Spacer(modifier = Modifier.weight(1f))
-                HorizontalDivider()
-                Spacer(modifier = Modifier.weight(1f))
-                HorizontalDivider()
-                Spacer(modifier = Modifier.weight(1f))
-                HorizontalDivider()
-                Spacer(modifier = Modifier.height(10.dp))
-            }
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(bottom = 9.dp)
-            ) {
-                //막대 그리기
-                val data = listOf(0.5f, 0.7f, 0.3f, 0.9f, 0.6f, 0.8f, 0.4f, 0.2f, 0.1f, 0.5f,
-                    0.7f, 0.3f, 0.9f, 0.6f, 0.8f, 0.4f, 0.2f, 0.1f, 0.5f, 0.7f, 0.3f, 0.9f, 0.6f,
-                    0.8f, 0.4f, 0.2f, 0.1f, 0.5f, 0.7f, 0.3f, 0.9f, 0.6f, 0.8f, 0.4f, 0.2f, 0.1f)
-                for(i in data) {
-                    Box(
-                        modifier = Modifier
-                            .weight(1f)
-                            .fillMaxSize()
-                            .padding(2.dp)
-                            .background(Colors.BLACK.copy(alpha = 0.4f))
-                    ) {
-                        Box(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .fillMaxHeight(i)
-                                .background(Colors.BACKGROUND_COLOR)
-                        )
-                    }
-                }
-            }
-        }
-
-    }
 }
 
 
