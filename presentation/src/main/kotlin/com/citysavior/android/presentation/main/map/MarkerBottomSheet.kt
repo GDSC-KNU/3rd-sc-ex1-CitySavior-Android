@@ -78,7 +78,13 @@ fun MarkerBottomSheet(
         onDismissRequest = onDismissRequest,
         shape = BottomSheetDefaults.HiddenShape,
         scrimColor = Color.Transparent,
-        dragHandle = null,
+        dragHandle = {
+             Box(
+                 modifier =Modifier.fillMaxWidth()
+             ){
+                 HorizontalDivider()
+             }
+        },
         windowInsets = WindowInsets(top = 80),
     ) {
         val isExpandedCondition =(sheetState.currentValue == SheetValue.Expanded) && (sheetState.targetValue == SheetValue.Expanded)
