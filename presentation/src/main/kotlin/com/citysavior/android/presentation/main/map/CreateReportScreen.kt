@@ -307,7 +307,7 @@ fun CreateReportScreen(
                     },
                 ) {
                     Text(
-                        text = it.english,
+                        text = it.getLocalLanguage(context),
                         color = textColor,
                         style = TextStyles.CONTENT_SMALL1_STYLE,
                     )

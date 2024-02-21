@@ -1,5 +1,6 @@
 package com.citysavior.android.presentation.main.map
 
+import android.content.Context
 import com.citysavior.android.domain.model.report.Category
 import com.citysavior.android.presentation.R
 
@@ -13,5 +14,13 @@ fun Category.getPaintRes(): Int{
         Category.CITY_OBSTACLE -> R.drawable.obstacle_icon_48
         Category.SCHOOL_ZONE -> R.drawable.scholl_icon_30
         Category.OTHER -> R.drawable.other_icon_30
+    }
+}
+
+fun Category.getLocalLanguage(context: Context): String{
+    val locale = context.resources.configuration.locales
+    return when(locale[0].language){
+        "ko" -> this.korean
+        else -> this.english
     }
 }

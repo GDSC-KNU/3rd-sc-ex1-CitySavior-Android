@@ -13,6 +13,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
@@ -29,12 +30,14 @@ import com.citysavior.android.presentation.main.home.component.CategoryItem
 import com.citysavior.android.presentation.main.home.component.CustomChip
 import com.citysavior.android.presentation.main.home.component.DailyProgress
 import com.citysavior.android.presentation.main.home.component.DailyProgressLoading
+import com.citysavior.android.presentation.main.map.getLocalLanguage
 
 
 @Composable
 fun HomeScreen(
     homeViewModel: HomeViewModel = hiltViewModel()
 ) {
+    val context = LocalContext.current
     val uiState = homeViewModel.reportStatistics.collectAsStateWithLifecycle()
     when(uiState.value){
         is Async.Loading,
@@ -106,14 +109,14 @@ fun HomeScreen(
                                 CategoryItem(
                                     modifier = Modifier.weight(1f),
                                     subTitle = "Sub Title",
-                                    title = left.category.korean,
+                                    title = left.category.getLocalLanguage(context),
                                     progress = Pair(left.resolvedReports, left.totalReports),
                                 )
                                 Spacer(modifier = Modifier.width(Sizes.INTERVAL0))
                                 CategoryItem(
                                     modifier = Modifier.weight(1f),
                                     subTitle = "Sub Title",
-                                    title = right.category.korean,
+                                    title = right.category.getLocalLanguage(context),
                                     progress = Pair(right.resolvedReports, right.totalReports),
                                 )
                             }
@@ -125,7 +128,7 @@ fun HomeScreen(
                                 CategoryItem(
                                     modifier = Modifier.weight(1f),
                                     subTitle = "Sub Title",
-                                    title = last.category.korean,
+                                    title = last.category.getLocalLanguage(context),
                                     progress = Pair(last.resolvedReports, last.totalReports),
                                 )
                                 Spacer(modifier = Modifier.width(Sizes.INTERVAL0))

@@ -47,6 +47,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
@@ -135,6 +136,7 @@ fun ModalTop(
     onIconClick : () -> Unit = {},
     isExpanded: Boolean = false,
 ) {
+    val context = LocalContext.current
     Box(
         modifier = Modifier
             .fillMaxWidth()
@@ -171,7 +173,7 @@ fun ModalTop(
                         }
                     }
                     Text(
-                        text = detail.category.english,
+                        text = detail.category.getLocalLanguage(context),
                         style = TextStyles.TITLE_LARGE1
                     )
                     Spacer(Modifier.weight(1f))
@@ -194,7 +196,7 @@ fun ModalTop(
                         .weight(3f)
                 ) {
                     Text(
-                        text = detail.category.korean,
+                        text = detail.category.getLocalLanguage(context),
                         style = TextStyles.TITLE_LARGE1
                     )
                     Text(
