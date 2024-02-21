@@ -146,31 +146,40 @@ fun ModalTop(
             enter = fadeIn(),
             exit = fadeOut(),
         ) {
-            Row(
+            Column(
                 modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically,
             ) {
-                Box(
-                    modifier = Modifier.weight(1f),
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically,
                 ) {
-                    Row{
+                    Box(
+                        modifier = Modifier.weight(1f),
+                    ) {
+                        Row {
 
-                        Icon(
-                            modifier= Modifier.clickable{
-                                onIconClick()
-                            },
-                            imageVector = Icons.Default.KeyboardArrowDown,
-                            contentDescription = null,
-                        )
-                        Spacer(modifier = Modifier.weight(1f))
+                            Icon(
+                                modifier = Modifier.clickable {
+                                    onIconClick()
+                                },
+                                imageVector = Icons.Default.KeyboardArrowDown,
+                                contentDescription = null,
+                            )
+                            Spacer(modifier = Modifier.weight(1f))
+                        }
                     }
+                    Text(
+                        text = detail.category.english,
+                        style = TextStyles.TITLE_LARGE1
+                    )
+                    Spacer(Modifier.weight(1f))
                 }
+                Spacer(modifier = Modifier.height(12.dp))
                 Text(
-                    text = detail.category.korean,
-                    style = TextStyles.TITLE_LARGE1
+                    text = detail.description,
+                    style = TextStyles.CONTENT_TEXT2_STYLE
                 )
-                Spacer(Modifier.weight(1f))
             }
         }
         AnimatedVisibility(
