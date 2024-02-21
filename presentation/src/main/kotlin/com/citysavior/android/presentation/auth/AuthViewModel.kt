@@ -24,7 +24,6 @@ class AuthViewModel @Inject constructor(
         }.onError {
             return it.message
         }
-        assert(false)//unreachable
         return null
     }
 
