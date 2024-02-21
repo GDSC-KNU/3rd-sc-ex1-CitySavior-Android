@@ -1,23 +1,20 @@
 package com.citysavior.android.domain.model.report
 
+
+/**
+ * 임시로 카테고리에 ko, en을 Domain Layer에 추가
+ * 향후 Presentation Layer에서 다국어 지원을 위해 변환이 필요함
+ */
 enum class Category(
     val korean : String,
+    val english : String,
 ){
-    ROAD_TRAFFIC("도로 및 교통"),
-    BUILD_STRUCTURE("건물 및 구조물"),
-    ENVIRONMENT("환경"),
-    PARK_PUBLIC("공원 및 공공 시설"),
-    FIRE_HAZARD("화재 위험"),
-    SAFETY_SECURITY("안전 및 보안"),
-    CITY_OBSTACLE("도시 장애물"),
-    BIKE_PEDESTRIAN_PATH("자전거 및 보행자 도로"),
-    STREET("거리"),
-    PUBLIC_TRANSPORT("대중교통"),
-    WASTE_MANAGEMENT("폐기물 관리"),
-    WATER("물 관련 문제"),
-    AIR_QUALITY("대기 질"),
-    ANIMAL_PLANT("동식물 관련 문제"),
-    HEALTH_SAFETY("건강 및 안전"),
-    SCHOOL_ZONE("학교 구역"),
-    OTHER("기타");
+    ROAD_TRAFFIC("도로 및 교통", "Road and Traffic"),
+    STREET("거리", "Street"),
+    BUILD_STRUCTURE("건물 및 구조물", "Building and Structure"),
+    ENVIRONMENT("환경", "Environment"),
+    PARK_PUBLIC("공원 및 공공 시설", "Park and Public Facility"),
+    CITY_OBSTACLE("도시 장애물", "City Obstacle"),
+    SCHOOL_ZONE("학교 구역", "School Zone"),
+    OTHER("기타", "Other");
 }

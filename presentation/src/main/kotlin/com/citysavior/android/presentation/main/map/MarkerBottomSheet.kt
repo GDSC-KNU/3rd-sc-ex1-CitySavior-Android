@@ -47,6 +47,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
@@ -58,6 +59,7 @@ import com.citysavior.android.presentation.common.component.CustomTextEditField
 import com.citysavior.android.presentation.common.constant.Colors
 import com.citysavior.android.presentation.common.constant.Sizes
 import com.citysavior.android.presentation.common.constant.TextStyles
+import com.citysavior.android.presentation.common.utils.noRippleClickable
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -78,7 +80,13 @@ fun MarkerBottomSheet(
         onDismissRequest = onDismissRequest,
         shape = BottomSheetDefaults.HiddenShape,
         scrimColor = Color.Transparent,
-        dragHandle = null,
+        dragHandle = {
+             Box(
+                 modifier =Modifier.fillMaxWidth()
+             ){
+                 HorizontalDivider()
+             }
+        },
         windowInsets = WindowInsets(top = 80),
     ) {
         val isExpandedCondition =(sheetState.currentValue == SheetValue.Expanded) && (sheetState.targetValue == SheetValue.Expanded)
@@ -128,6 +136,7 @@ fun ModalTop(
     onIconClick : () -> Unit = {},
     isExpanded: Boolean = false,
 ) {
+    val context = LocalContext.current
     Box(
         modifier = Modifier
             .fillMaxWidth()
@@ -140,31 +149,40 @@ fun ModalTop(
             enter = fadeIn(),
             exit = fadeOut(),
         ) {
-            Row(
+            Column(
                 modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically,
             ) {
-                Box(
-                    modifier = Modifier.weight(1f),
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically,
                 ) {
-                    Row{
+                    Box(
+                        modifier = Modifier.weight(1f),
+                    ) {
+                        Row {
 
-                        Icon(
-                            modifier= Modifier.clickable{
-                                onIconClick()
-                            },
-                            imageVector = Icons.Default.KeyboardArrowDown,
-                            contentDescription = null,
-                        )
-                        Spacer(modifier = Modifier.weight(1f))
+                            Icon(
+                                modifier = Modifier.noRippleClickable {
+                                    onIconClick()
+                                },
+                                imageVector = Icons.Default.KeyboardArrowDown,
+                                contentDescription = null,
+                            )
+                            Spacer(modifier = Modifier.weight(1f))
+                        }
                     }
+                    Text(
+                        text = detail.category.getLocalLanguage(context),
+                        style = TextStyles.TITLE_LARGE1
+                    )
+                    Spacer(Modifier.weight(1f))
                 }
+                Spacer(modifier = Modifier.height(12.dp))
                 Text(
-                    text = detail.category.korean,
-                    style = TextStyles.TITLE_LARGE1
+                    text = detail.description,
+                    style = TextStyles.CONTENT_TEXT2_STYLE
                 )
-                Spacer(Modifier.weight(1f))
             }
         }
         AnimatedVisibility(
@@ -178,7 +196,7 @@ fun ModalTop(
                         .weight(3f)
                 ) {
                     Text(
-                        text = detail.category.korean,
+                        text = detail.category.getLocalLanguage(context),
                         style = TextStyles.TITLE_LARGE1
                     )
                     Text(
@@ -226,7 +244,7 @@ fun ModalMiddle(
             item {
                 AsyncImage(
                     modifier = Modifier
-                        .aspectRatio(1f),
+                        .fillMaxWidth(),
                     model = detail.imgUrl,
                     contentDescription = null,
                     contentScale = ContentScale.Crop,
@@ -271,35 +289,51 @@ fun ModalMiddle(
             }
 
         }
-        Column(modifier = Modifier
-            .fillMaxWidth()
-            .align(Alignment.BottomCenter)) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .align(Alignment.BottomCenter)
+        ) {
             var comment by remember { mutableStateOf("") }
             Box(
                 modifier = Modifier
-                    .fillMaxWidth(),
+                    .fillMaxWidth().padding(horizontal = 6.dp),
             ) {
-                CustomTextEditField(
-                    value = comment,
-                    label = "댓글 입력",
-                    onValueChange = { comment = it },
-                    keyboardOptions = KeyboardOptions(
-                        imeAction = ImeAction.Done,
-                    ),
-                    keyboardActions = KeyboardActions(
-                        onDone = {
-                            focusManager.clearFocus()
-                            if (comment.isEmpty()) return@KeyboardActions
-                            onAddCommentClicked(comment)
-                            comment = ""
-                        }
-                    ),
-                )
+                Box(
+                    modifier = Modifier
+                    .fillMaxWidth()
+                    .background(
+                        color = Colors.TEXT_FIELD_GREY,
+                        shape = RoundedCornerShape(8.dp),
+                    )
+                ){
+                    CustomTextEditField(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 12.dp, vertical = 3.dp),
+                        backgroundColor = Colors.TEXT_FIELD_GREY,
+                        startPadding = 0.dp,
+                        value = comment,
+                        label = "댓글 입력",
+                        onValueChange = { comment = it },
+                        keyboardOptions = KeyboardOptions(
+                            imeAction = ImeAction.Done,
+                        ),
+                        keyboardActions = KeyboardActions(
+                            onDone = {
+                                focusManager.clearFocus()
+                                if (comment.isEmpty()) return@KeyboardActions
+                                onAddCommentClicked(comment)
+                                comment = ""
+                            }
+                        ),
+                    )
+                }
                 if(comment.isNotEmpty()){
                     Box(
                         modifier = Modifier
                             .align(Alignment.CenterEnd)
-                            .padding(end = 12.dp)
+                            .padding(end = 6.dp)
                             .clickable {
                                 focusManager.clearFocus()
                                 if (comment.isEmpty()) return@clickable
@@ -308,9 +342,9 @@ fun ModalMiddle(
                             }
                             .background(
                                 color = Colors.PRIMARY_BLUE,
-                                shape = RoundedCornerShape(2.dp),
+                                shape = RoundedCornerShape(8.dp),
                             )
-                            .padding(vertical = 4.dp, horizontal = 10.dp)
+                            .padding(vertical = 6.dp, horizontal = 12.dp)
                     ){
                         Text(
                             text = "등록",

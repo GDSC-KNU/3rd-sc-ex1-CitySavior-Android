@@ -1,9 +1,11 @@
 package com.citysavior.android.presentation.main.profile
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -26,6 +28,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.citysavior.android.domain.model.common.Async
 import com.citysavior.android.domain.model.user.UserInfo
 import com.citysavior.android.presentation.common.component.ErrorScreen
+import com.citysavior.android.presentation.common.constant.Colors
 import com.citysavior.android.presentation.common.constant.Sizes
 import com.citysavior.android.presentation.common.constant.TextStyles
 import com.citysavior.android.presentation.common.layout.DefaultLayout
@@ -71,7 +74,7 @@ fun ProfileScreen(
                 ) {
                     Spacer(modifier = Modifier.height(30.dp))
                     ProfileBox(
-                        title = "DamageTracker",
+                        title = "User",
                         content = "View damage at a glance",
                     )
                     Spacer(modifier = Modifier.height(Sizes.INTERVAL_LARGE4))
@@ -108,6 +111,20 @@ fun ProfileScreen(
                         style = TextStyles.TITLE_MEDIUM2,
                     )
                     Spacer(modifier = Modifier.height(Sizes.INTERVAL2))
+                    if(data.achieveProgressingList.isEmpty()){
+                        Box(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .aspectRatio(2f)
+                                .background(Colors.WIDGET_BG_GREY)
+                        ){
+                            Text(
+                                "No achievements yet...",
+                                style = TextStyles.CONTENT_TEXT1_STYLE,
+                                modifier = Modifier.align(Alignment.Center),
+                            )
+                        }
+                    }
                     data.achieveProgressingList.forEach {achieveProgress ->
                         AchievementItem(
                             modifier = Modifier.padding(

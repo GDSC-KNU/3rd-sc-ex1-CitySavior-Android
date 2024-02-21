@@ -32,7 +32,7 @@ fun ProfileBox(
             modifier = Modifier
                 .size(60.dp)
                 .background(
-                    color = Colors.PRIMARY_BLUE,
+                    color = Colors.WIDGET_BG_GREY,
                     shape = RoundedCornerShape(size = 60.dp)
                 ),
         )

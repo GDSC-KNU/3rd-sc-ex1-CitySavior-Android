@@ -1,6 +1,7 @@
 package com.citysavior.android.presentation.main.home.component
 
 
+import androidx.annotation.DrawableRes
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -13,17 +14,17 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
+import com.citysavior.android.presentation.R
 import com.citysavior.android.presentation.common.constant.Colors
 import com.citysavior.android.presentation.common.constant.Sizes
 import com.citysavior.android.presentation.common.constant.TextStyles
@@ -32,9 +33,9 @@ import com.citysavior.android.presentation.common.constant.TextStyles
 @Composable
 fun CategoryItem(
     modifier: Modifier = Modifier,
-    subTitle: String,
     title: String,
     progress : Pair<Int,Int>,
+    @DrawableRes iconRes : Int,
 ){
     Column(
         modifier = modifier
@@ -55,13 +56,16 @@ fun CategoryItem(
                 ),
             contentAlignment = Alignment.Center
         ) {
-            Icon(Icons.Filled.Search, contentDescription = "Search", tint = Color.White)
+            Icon(
+                modifier = Modifier.size(18.dp),
+                painter = painterResource(
+                    id = iconRes
+                ),
+                contentDescription = "Search",
+                tint = Color.White
+            )
         }
         Spacer(modifier =Modifier.height(Sizes.INTERVAL0))
-        Text(
-            text = subTitle,
-            style = TextStyles.CONTENT_SMALL1_STYLE,
-        )
         Text(
             text = title,
             style = TextStyles.TITLE_MEDIUM2,
@@ -102,8 +106,8 @@ fun CategoryItem(
 @Preview(showBackground = true, backgroundColor = 0xFFFFFFFF)
 fun CategoryItemPreview(){
     CategoryItem(
-        subTitle = "5 New",
         title = "Damages",
         progress = Pair(9, 24),
+        iconRes = R.drawable.build_icon_50
     )
 }

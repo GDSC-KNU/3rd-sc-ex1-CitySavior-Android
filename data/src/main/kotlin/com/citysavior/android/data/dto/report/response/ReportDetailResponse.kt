@@ -7,15 +7,15 @@ import java.time.LocalDate
 
 data class ReportDetailResponse(
     val description : String,
-    val imgUrl : String,
+    val img_url : String,
     val reportDate : LocalDate,
     val repairedDate : LocalDate?,
     val comments : List<CommentDto>,
 )
 
 data class CommentDto(
-    val id : Long,
-    val comment : String,
+    val commentId : Long,
+    val content : String,
     val createdDate: LocalDate,
 )
 
@@ -27,15 +27,15 @@ fun ReportDetailResponse.toDomain(
     category = reportPoint.category,
     weight = reportPoint.weight,
     description = description,
-    imgUrl = imgUrl,
+    imgUrl = img_url,
     reportDate = reportDate,
     repairedDate = repairedDate,
     comments = comments.toDomain(),
 )
 
 fun CommentDto.toDomain() = Comment(
-    id = id,
-    content = comment,
+    id = commentId,
+    content = content,
     createdDate = createdDate,
 )
 

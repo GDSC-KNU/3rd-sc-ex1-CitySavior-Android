@@ -76,7 +76,7 @@ interface ApiClient {
     @GET("/v1/reports/{reportId}")
     suspend fun getReportDetail(@Path("reportId") reportId : Long) : Response<ReportDetailResponse>
 
-    @POST("/v1/reports/{reportId}/comment")
+    @POST("/v1/reports/{reportId}/comments")
     suspend fun createComment(
         @Path("reportId") reportId : Long,
         @Body request : CreateReportCommentRequest,

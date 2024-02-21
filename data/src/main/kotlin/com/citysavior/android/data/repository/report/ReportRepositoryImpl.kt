@@ -1,9 +1,11 @@
 package com.citysavior.android.data.repository.report
 
+import android.util.Log
 import com.citysavior.android.data.api.ApiClient
 import com.citysavior.android.data.dto.report.request.CreateReportCommentRequest
 import com.citysavior.android.data.dto.report.request.toData
 import com.citysavior.android.data.dto.report.response.toDomain
+import com.citysavior.android.data.utils.compressImageIfNeeded
 import com.citysavior.android.data.utils.invokeApiAndConvertAsync
 import com.citysavior.android.domain.model.common.Async
 import com.citysavior.android.domain.model.report.Point
@@ -52,10 +54,12 @@ class ReportRepositoryImpl @Inject constructor(
     override suspend fun createReport(
         params: CreateReportParams,
     ): Async<Long> {
-        val requestFile = params.file.asRequestBody("image/*".toMediaType()) // 파일의 MIME 타입을 지정해야 합니다.
-        val requestDto = params.toData()
+        val file = compressImageIfNeeded(params.file)
 
-        val formFile = MultipartBody.Part.createFormData("imgFiles", "imgFiles", requestFile)
+        val requestFile = file.asRequestBody("image/*".toMediaType()) // 파일의 MIME 타입을 지정해야 합니다.
+        val requestDto = params.toData()
+        Log.d("FileName", file.name)
+        val formFile = MultipartBody.Part.createFormData("imgFiles", file.name, requestFile)
         val dto = Gson().toJson(requestDto).toRequestBody("application/json".toMediaType())
 
         return invokeApiAndConvertAsync(
