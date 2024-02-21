@@ -286,35 +286,51 @@ fun ModalMiddle(
             }
 
         }
-        Column(modifier = Modifier
-            .fillMaxWidth()
-            .align(Alignment.BottomCenter)) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .align(Alignment.BottomCenter)
+        ) {
             var comment by remember { mutableStateOf("") }
             Box(
                 modifier = Modifier
-                    .fillMaxWidth(),
+                    .fillMaxWidth().padding(horizontal = 6.dp),
             ) {
-                CustomTextEditField(
-                    value = comment,
-                    label = "댓글 입력",
-                    onValueChange = { comment = it },
-                    keyboardOptions = KeyboardOptions(
-                        imeAction = ImeAction.Done,
-                    ),
-                    keyboardActions = KeyboardActions(
-                        onDone = {
-                            focusManager.clearFocus()
-                            if (comment.isEmpty()) return@KeyboardActions
-                            onAddCommentClicked(comment)
-                            comment = ""
-                        }
-                    ),
-                )
+                Box(
+                    modifier = Modifier
+                    .fillMaxWidth()
+                    .background(
+                        color = Colors.TEXT_FIELD_GREY,
+                        shape = RoundedCornerShape(8.dp),
+                    )
+                ){
+                    CustomTextEditField(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 12.dp, vertical = 3.dp),
+                        backgroundColor = Colors.TEXT_FIELD_GREY,
+                        startPadding = 0.dp,
+                        value = comment,
+                        label = "댓글 입력",
+                        onValueChange = { comment = it },
+                        keyboardOptions = KeyboardOptions(
+                            imeAction = ImeAction.Done,
+                        ),
+                        keyboardActions = KeyboardActions(
+                            onDone = {
+                                focusManager.clearFocus()
+                                if (comment.isEmpty()) return@KeyboardActions
+                                onAddCommentClicked(comment)
+                                comment = ""
+                            }
+                        ),
+                    )
+                }
                 if(comment.isNotEmpty()){
                     Box(
                         modifier = Modifier
                             .align(Alignment.CenterEnd)
-                            .padding(end = 12.dp)
+                            .padding(end = 6.dp)
                             .clickable {
                                 focusManager.clearFocus()
                                 if (comment.isEmpty()) return@clickable
@@ -323,9 +339,9 @@ fun ModalMiddle(
                             }
                             .background(
                                 color = Colors.PRIMARY_BLUE,
-                                shape = RoundedCornerShape(2.dp),
+                                shape = RoundedCornerShape(8.dp),
                             )
-                            .padding(vertical = 4.dp, horizontal = 10.dp)
+                            .padding(vertical = 6.dp, horizontal = 12.dp)
                     ){
                         Text(
                             text = "등록",
