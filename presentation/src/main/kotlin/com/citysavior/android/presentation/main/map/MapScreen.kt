@@ -176,8 +176,8 @@ fun MapScreen(
                             ReportMarker(
                                 latitude = it.point.latitude,
                                 longitude = it.point.longitude,
+                                category = it.category,
                                 weight = it.weight,
-                                markerBitmap = null,
                                 onClick = {
                                     selectedReportId = it.id
                                     mapViewModel.getDetailReport(it.id)
@@ -218,8 +218,8 @@ fun MapScreen(
                             ReportMarker(
                                 latitude = it.point.latitude,
                                 longitude = it.point.longitude,
+                                category = it.category,
                                 weight = it.weight,
-                                markerBitmap = null,
                                 onClick = {
                                     selectedReportId = it.id
                                     mapViewModel.getDetailReport(it.id)
