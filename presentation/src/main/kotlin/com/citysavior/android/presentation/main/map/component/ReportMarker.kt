@@ -12,6 +12,7 @@ import timber.log.Timber
 fun ReportMarker(
     latitude: Double,
     longitude: Double,
+    weight: Int,
     category: Category = Category.OTHER,
     markerBitmap : BitmapDescriptor? = null,
     onClick: () -> Unit = {}
