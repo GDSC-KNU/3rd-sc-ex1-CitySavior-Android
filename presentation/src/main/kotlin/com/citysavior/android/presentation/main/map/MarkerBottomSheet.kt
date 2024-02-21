@@ -58,6 +58,7 @@ import com.citysavior.android.presentation.common.component.CustomTextEditField
 import com.citysavior.android.presentation.common.constant.Colors
 import com.citysavior.android.presentation.common.constant.Sizes
 import com.citysavior.android.presentation.common.constant.TextStyles
+import com.citysavior.android.presentation.common.utils.noRippleClickable
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -160,7 +161,7 @@ fun ModalTop(
                         Row {
 
                             Icon(
-                                modifier = Modifier.clickable {
+                                modifier = Modifier.noRippleClickable {
                                     onIconClick()
                                 },
                                 imageVector = Icons.Default.KeyboardArrowDown,
