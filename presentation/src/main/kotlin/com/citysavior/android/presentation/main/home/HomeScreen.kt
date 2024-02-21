@@ -31,6 +31,7 @@ import com.citysavior.android.presentation.main.home.component.CustomChip
 import com.citysavior.android.presentation.main.home.component.DailyProgress
 import com.citysavior.android.presentation.main.home.component.DailyProgressLoading
 import com.citysavior.android.presentation.main.map.getLocalLanguage
+import com.citysavior.android.presentation.main.map.getPaintRes
 
 
 @Composable
@@ -102,22 +103,22 @@ fun HomeScreen(
                     )
                     Spacer(modifier = Modifier.height(Sizes.INTERVAL2))
                     data?.let {
-                        for(i in 0 until (data.statisticsDetails.size/2)){
+                        for(i in 0 until data.statisticsDetails.size step 2){
                             val left = data.statisticsDetails[i]
                             val right = data.statisticsDetails[i+1]
                             Row{
                                 CategoryItem(
                                     modifier = Modifier.weight(1f),
-                                    subTitle = "Sub Title",
                                     title = left.category.getLocalLanguage(context),
                                     progress = Pair(left.resolvedReports, left.totalReports),
+                                    iconRes = left.category.getPaintRes(),
                                 )
                                 Spacer(modifier = Modifier.width(Sizes.INTERVAL0))
                                 CategoryItem(
                                     modifier = Modifier.weight(1f),
-                                    subTitle = "Sub Title",
                                     title = right.category.getLocalLanguage(context),
                                     progress = Pair(right.resolvedReports, right.totalReports),
+                                    iconRes = right.category.getPaintRes(),
                                 )
                             }
                             Spacer(modifier = Modifier.height(Sizes.INTERVAL0))
@@ -127,9 +128,9 @@ fun HomeScreen(
                             Row {
                                 CategoryItem(
                                     modifier = Modifier.weight(1f),
-                                    subTitle = "Sub Title",
                                     title = last.category.getLocalLanguage(context),
                                     progress = Pair(last.resolvedReports, last.totalReports),
+                                    iconRes = last.category.getPaintRes(),
                                 )
                                 Spacer(modifier = Modifier.width(Sizes.INTERVAL0))
                                 Spacer(modifier = Modifier.weight(1f))
