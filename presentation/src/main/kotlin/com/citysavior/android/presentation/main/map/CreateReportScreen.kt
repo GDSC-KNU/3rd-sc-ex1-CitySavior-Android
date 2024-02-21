@@ -6,10 +6,12 @@ import android.content.Context
 import android.net.Uri
 import android.os.Environment
 import android.provider.MediaStore
+import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -21,6 +23,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowLeft
@@ -74,6 +77,9 @@ fun CreateReportScreen(
     var capturedImageUri by remember {
         mutableStateOf<Uri>(Uri.EMPTY)
     }
+    var selectableCategory by remember {
+        mutableStateOf<Category?>(null)
+    }
 
 
 
@@ -120,192 +126,267 @@ fun CreateReportScreen(
         modifier = Modifier
             .fillMaxSize()
             .background(Color.White)
-            .padding(horizontal = 20.dp)
     ){
-        TopAppBar(
-            modifier = Modifier.background(Color.White),
-            colors = TopAppBarDefaults.topAppBarColors(
-                containerColor = Color.White,
-            ),
-            title = {
-                Text(
-                    text = "신고하기",
-                    style = TextStyles.TITLE_MEDIUM2,
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .background(Color.White)
+                .padding(horizontal = 20.dp)
+        ) {
+            TopAppBar(
+                modifier = Modifier.background(Color.White),
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = Color.White,
+                ),
+                title = {
+                    Text(
+                        text = "신고하기",
+                        style = TextStyles.TITLE_MEDIUM2,
+                    )
+                },
+                navigationIcon = {
+                    Icon(
+                        modifier = Modifier.noRippleClickable { onBackIconClick() },
+                        imageVector = Icons.AutoMirrored.Filled.KeyboardArrowLeft,
+                        contentDescription = null
+                    )
+                },
+            )
+            Text(
+                text = "Upload Image",
+                style = TextStyles.TITLE_MEDIUM2,
+            )
+            Spacer(modifier = Modifier.height(20.dp))
+            if(capturedImageUri == Uri.EMPTY) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .aspectRatio(2f)
+                        .background(Colors.WIDGET_BG_GREY)
                 )
-            },
-            navigationIcon = {
-                Icon(
-                    modifier = Modifier.noRippleClickable { onBackIconClick() },
-                    imageVector = Icons.AutoMirrored.Filled.KeyboardArrowLeft,
+            }else{
+                Image(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .aspectRatio(2f),
+                    painter = rememberAsyncImagePainter(capturedImageUri),
+                    contentScale = ContentScale.FillHeight,
                     contentDescription = null
                 )
-            },
-        )
-        Text(
-            text = "Upload Image",
-            style = TextStyles.TITLE_MEDIUM2,
-        )
-        Spacer(modifier = Modifier.height(20.dp))
-        if(capturedImageUri == Uri.EMPTY) {
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .aspectRatio(2f)
-                    .background(Colors.WIDGET_BG_GREY)
+            }
+            Spacer(modifier = Modifier.height(20.dp))
+            Row{
+                TextButton(
+                    shape = RoundedCornerShape(Sizes.WIDGET_ROUND),
+                    modifier = Modifier
+                        .shadow(
+                            elevation = 2.dp,
+                            shape = RoundedCornerShape(Sizes.WIDGET_ROUND),
+                        )
+                        .background(
+                            color = Colors.PRIMARY_BLUE,
+                            shape = RoundedCornerShape(Sizes.WIDGET_ROUND)
+                        )
+                        .weight(1f),
+                    contentPadding = PaddingValues(
+                        vertical = 16.dp,
+                    ),
+                    onClick = {
+                        if (cameraPermissionState.status.isGranted) {
+                            Timber.d("카메라 권한 허용됨")
+                            val directory = context.getExternalFilesDir(Environment.DIRECTORY_PICTURES)
+
+                            val photoFile = File.createTempFile(
+                                "selected_image",
+                                ".jpg",
+                                directory,
+                            ) // 해당 폴더에 임시 파일을 만든다.
+                            photoUri = FileProvider.getUriForFile(
+                                context,
+                                context.packageName + ".provider",
+                                photoFile
+                            )
+
+                            takeCameraLauncher.launch(photoUri)
+                        } else {
+                            cameraPermissionState.launchPermissionRequest()
+                        }
+                    },
+                ) {
+                    Text(
+                        text = "Take photo",
+                        color = Color.White,
+                        style = TextStyles.CONTENT_SMALL1_STYLE,
+                    )
+                }
+                Spacer(modifier = Modifier.width(12.dp))
+                TextButton(
+                    shape = RoundedCornerShape(Sizes.WIDGET_ROUND),
+                    modifier = Modifier
+                        .shadow(
+                            elevation = 2.dp,
+                            shape = RoundedCornerShape(Sizes.WIDGET_ROUND),
+                        )
+                        .background(
+                            color = Color.White,
+                            shape = RoundedCornerShape(Sizes.WIDGET_ROUND)
+                        )
+                        .weight(1f),
+                    contentPadding = PaddingValues(
+                        vertical = 16.dp,
+                    ),
+                    onClick = {
+                        galleryLauncher.launch("image/*")
+                    },
+                ) {
+                    Text(
+                        text = "Browse gallery",
+                        color = Colors.BLACK,
+                        style = TextStyles.CONTENT_SMALL1_STYLE,
+                    )
+                }
+            }
+            Spacer(modifier = Modifier.height(20.dp))
+            Text(
+                text = "Add description",
+                style = TextStyles.CONTENT_TEXT3_STYLE,
             )
-        }else{
-            Image(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .aspectRatio(2f),
-                painter = rememberAsyncImagePainter(capturedImageUri),
-                contentScale = ContentScale.FillHeight,
-                contentDescription = null
+            Spacer(modifier = Modifier.height(20.dp))
+
+            CustomTextEditField(
+                modifier = Modifier.background(
+                    color = Colors.WIDGET_BG_GREY, shape = RoundedCornerShape(Sizes.WIDGET_ROUND)
+                ),
+                value = description,
+                onValueChange = { description = it },
+                backgroundColor = Color.Transparent,
+                startPadding = 12.dp,
+            )
+
+            Spacer(modifier = Modifier.height(20.dp))
+            Text(
+                text = "Select Category",
+                style = TextStyles.CONTENT_TEXT3_STYLE,
             )
         }
+
         Spacer(modifier = Modifier.height(20.dp))
-        Row{
+        Row(
+            modifier = Modifier.horizontalScroll(rememberScrollState())
+        ) {
+            Category.values().forEach {
+                val backgroundColor = if (selectableCategory == it) {
+                    Colors.PRIMARY_BLUE
+                } else {
+                    Colors.WIDGET_BG_GREY
+                }
+                val textColor = if (selectableCategory == it) {
+                    Color.White
+                } else {
+                    Colors.BLACK
+                }
+                Spacer(modifier = Modifier.width(12.dp))
+                TextButton(
+                    shape = RoundedCornerShape(Sizes.WIDGET_ROUND),
+                    modifier = Modifier
+                        .shadow(
+                            elevation = 2.dp,
+                            shape = RoundedCornerShape(Sizes.WIDGET_ROUND),
+                        )
+                        .background(
+                            color = backgroundColor,
+                            shape = RoundedCornerShape(Sizes.WIDGET_ROUND)
+                        )
+                        .height(40.dp),
+                    contentPadding = PaddingValues(
+                        vertical = 6.dp,
+                        horizontal = 20.dp,
+                    ),
+                    onClick = {
+                        selectableCategory = it
+                    },
+                ) {
+                    Text(
+                        text = it.english,
+                        color = textColor,
+                        style = TextStyles.CONTENT_SMALL1_STYLE,
+                    )
+                }
+            }
+        }
+
+        Spacer(modifier = Modifier.weight(1f))
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .background(Color.White)
+                .padding(horizontal = 20.dp)
+        ) {
             TextButton(
                 shape = RoundedCornerShape(Sizes.WIDGET_ROUND),
                 modifier = Modifier
-                    .shadow(
-                        elevation = 2.dp,
-                        shape = RoundedCornerShape(Sizes.WIDGET_ROUND),
-                    )
                     .background(
                         color = Colors.PRIMARY_BLUE,
                         shape = RoundedCornerShape(Sizes.WIDGET_ROUND)
                     )
-                    .weight(1f),
+                    .fillMaxWidth(),
                 contentPadding = PaddingValues(
-                    vertical = 16.dp,
+                    horizontal = 50.dp,
+                    vertical = 12.dp,
                 ),
                 onClick = {
-                    if (cameraPermissionState.status.isGranted) {
-                        Timber.d("카메라 권한 허용됨")
-                        val directory = context.getExternalFilesDir(Environment.DIRECTORY_PICTURES)
-
-                        val photoFile = File.createTempFile(
-                            "selected_image",
-                            ".jpg",
-                            directory,
-                        ) // 해당 폴더에 임시 파일을 만든다.
-                        photoUri = FileProvider.getUriForFile(
-                            context,
-                            context.packageName + ".provider",
-                            photoFile
-                        )
-
-                        takeCameraLauncher.launch(photoUri)
-                    } else {
-                        cameraPermissionState.launchPermissionRequest()
+                    val file = getFileFromContentUri(context, capturedImageUri)
+                    if(file ==null){
+                        Toast.makeText(context, "Please select image", Toast.LENGTH_SHORT).show()
+                        return@TextButton
                     }
-                },
-            ) {
-                Text(
-                    text = "Take photo",
-                    color = Color.White,
-                    style = TextStyles.CONTENT_SMALL1_STYLE,
-                )
-            }
-            Spacer(modifier = Modifier.width(12.dp))
-            TextButton(
-                shape = RoundedCornerShape(Sizes.WIDGET_ROUND),
-                modifier = Modifier
-                    .shadow(
-                        elevation = 2.dp,
-                        shape = RoundedCornerShape(Sizes.WIDGET_ROUND),
-                    )
-                    .background(
-                        color = Color.White,
-                        shape = RoundedCornerShape(Sizes.WIDGET_ROUND)
-                    )
-                    .weight(1f),
-                contentPadding = PaddingValues(
-                    vertical = 16.dp,
-                ),
-                onClick = {
-                    galleryLauncher.launch("image/*")
-                },
-            ) {
-                Text(
-                    text = "Browse gallery",
-                    color = Colors.BLACK,
-                    style = TextStyles.CONTENT_SMALL1_STYLE,
-                )
-            }
-        }
-        Spacer(modifier = Modifier.height(20.dp))
-        Text(
-            text = "Add description",
-            style = TextStyles.CONTENT_TEXT3_STYLE,
-        )
-        Spacer(modifier = Modifier.height(20.dp))
+                    if(description.isEmpty()){
+                        Toast.makeText(context, "Please enter description", Toast.LENGTH_SHORT).show()
+                        return@TextButton
+                    }
+                    if(selectableCategory == null){
+                        Toast.makeText(context, "Please select category", Toast.LENGTH_SHORT).show()
+                        return@TextButton
+                    }
 
-        CustomTextEditField(
-            modifier = Modifier.background(
-                color = Colors.WIDGET_BG_GREY, shape = RoundedCornerShape(Sizes.WIDGET_ROUND)
-            ),
-            value = description,
-            onValueChange = { description = it },
-            backgroundColor = Color.Transparent,
-            startPadding = 12.dp,
-        )
-
-        Spacer(modifier = Modifier.height(20.dp))
-        Text(
-            text = "Select Category",
-            style = TextStyles.CONTENT_TEXT3_STYLE,
-        )
-
-        Spacer(modifier = Modifier.weight(1f))
-        TextButton(
-            shape = RoundedCornerShape(Sizes.WIDGET_ROUND),
-            modifier = Modifier
-                .background(
-                    color = Colors.PRIMARY_BLUE,
-                    shape = RoundedCornerShape(Sizes.WIDGET_ROUND)
-                )
-                .fillMaxWidth(),
-            contentPadding = PaddingValues(
-                horizontal = 50.dp,
-                vertical = 12.dp,
-            ),
-            onClick = {
-                val file = getFileFromContentUri(context, capturedImageUri)
-                if(file != null){
                     val params = CreateReportParams(
                         file = file,
                         point = Point.fixture(),//ViewModel에서 유저위치 가져올 것
                         description = description,
-                        category = Category.STREET
+                        category = selectableCategory!!
                     )
                     onUploadButtonClick(params)
-                }
-            },
-        ) {
-            Text(
-                text = "Upload",
-                color = Color.White,
-                style = TextStyles.TITLE_MEDIUM2,
-            )
+                },
+            ) {
+                Text(
+                    text = "Upload",
+                    color = Color.White,
+                    style = TextStyles.TITLE_MEDIUM2,
+                )
+            }
+
+            Spacer(modifier = Modifier.height(20.dp))
         }
 
-        Spacer(modifier = Modifier.height(20.dp))
     }
 }
 
 fun getFileFromContentUri(context: Context, uri: Uri): File? {
-    val contentResolver = context.contentResolver
-    val inputStream = contentResolver.openInputStream(uri)
-    val tempFile = File.createTempFile("temp", null, context.cacheDir)
-    tempFile.deleteOnExit()
-    inputStream?.use { input ->
-        FileOutputStream(tempFile).use { output ->
-            input.copyTo(output)
+    return try {
+        val contentResolver = context.contentResolver
+        val inputStream = contentResolver.openInputStream(uri)
+        val tempFile = File.createTempFile("temp", null, context.cacheDir)
+        tempFile.deleteOnExit()
+        inputStream?.use { input ->
+            FileOutputStream(tempFile).use { output ->
+                input.copyTo(output)
+            }
         }
+        return tempFile
+    } catch (e: Exception) {
+        Timber.e(e)
+        null
     }
-    return tempFile
 }
 
 
