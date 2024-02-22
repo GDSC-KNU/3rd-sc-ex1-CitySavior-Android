@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">presentation</string>
+    <string name="onboarding0">도시의 보호자가 되어보세요</string>
+    <string name="onboarding_start_button">시작하기</string>
+    <string name="onboarding1">도시의 파손지역을 신고해주세요</string>
+    <string name="onboarding2">도시를 더 안전하게 만드세요</string>
+    <string name="onboarding3">도시가 더 안전해지는 것을 확인해보세요</string>
+    <string name="bottom_navigation_home">홈</string>
+    <string name="bottom_navigation_map">지도</string>
+    <string name="bottom_navigation_profile">프로필</string>
+</resources>

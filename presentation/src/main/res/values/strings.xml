@@ -5,4 +5,7 @@
     <string name="onboarding1">Report your city breakage</string>
     <string name="onboarding2">Make you city safer</string>
     <string name="onboarding3">Watch your city become safer</string>
+    <string name="bottom_navigation_home">Home</string>
+    <string name="bottom_navigation_map">Map</string>
+    <string name="bottom_navigation_profile">Profile</string>
 </resources>

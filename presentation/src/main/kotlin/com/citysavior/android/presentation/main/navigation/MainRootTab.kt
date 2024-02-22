@@ -1,6 +1,7 @@
 package com.citysavior.android.presentation.main.navigation
 
 import androidx.annotation.DrawableRes
+import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -19,6 +20,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.currentBackStackEntryAsState
@@ -36,12 +38,12 @@ import com.citysavior.android.presentation.main.profile.navigation.profileGraph
 
 enum class BottomNavRouter(
     val routePath: String,
-    val korean: String,
+    @StringRes val content: Int,
     @DrawableRes val icon: Int,
 ) {
-    HOME(HomeRoute.START_ROUTE,"홈", R.drawable.home_icon),
-    MAP(MapRoute.START_ROUTE,"지도", R.drawable.map_icon),
-    PROFILE(ProfileRoute.START_ROUTE,"내정보", R.drawable.profile_icon),
+    HOME(HomeRoute.START_ROUTE,R.string.bottom_navigation_home, R.drawable.home_icon),
+    MAP(MapRoute.START_ROUTE,R.string.bottom_navigation_map, R.drawable.map_icon),
+    PROFILE(ProfileRoute.START_ROUTE,R.string.bottom_navigation_profile, R.drawable.profile_icon),
 }
 
 
@@ -90,7 +92,7 @@ fun MainRootTab(){
                                 modifier = Modifier.size(23.dp),
                                 tint = if (select) Color(0xFF2E2E2E) else Color(0xFFD5D5D5),
                             )
-                            Text(text = item.korean, style = TextStyles.CONTENT_SMALL2_STYLE)
+                            Text(text = stringResource(id = item.content), style = TextStyles.CONTENT_SMALL2_STYLE)
                         }
                     }
                 }
