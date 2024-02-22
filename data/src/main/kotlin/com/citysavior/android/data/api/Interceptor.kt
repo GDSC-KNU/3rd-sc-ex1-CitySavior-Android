@@ -97,11 +97,18 @@ class HeaderInterceptor @Inject constructor(
             accessToken = jwtToken?.accessToken ?: ""
         }
         if(accessToken.isEmpty()){
+            Log.d("HeaderInterceptor", "accessToken EMPTY: $accessToken")
             val newRequest = chain.request().newBuilder()
                 .removeHeader("Auth")
                 .build()
-            return chain.proceed(newRequest)
+            return Response.Builder()
+                .request(newRequest)
+                .code(401)
+                .message("Unauthorized")
+                .protocol(chain.connection()?.protocol()!!)
+                .build()
         }
+        Log.d("HeaderInterceptor", "accessToken : [$accessToken]")
         val newRequest = chain.request().newBuilder()
             .removeHeader("Auth")
             .addHeader("Authorization", "Bearer $accessToken")
